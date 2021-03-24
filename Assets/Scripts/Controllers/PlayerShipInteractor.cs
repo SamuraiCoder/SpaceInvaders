@@ -3,26 +3,33 @@ using pEventBus;
 using Events;
 using Lean.Touch;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Controllers
 {
     public class PlayerShipInteractor : MonoBehaviour
     {
+        private enum PlayerDirection
+        {
+            GOING_LEFT,
+            GOING_RIGHT
+        }
+        
         private Vector2 directionVector;
+        private Vector2 directionPlayerShip;
         private bool isFingerSwipe;
+        private PlayerDirection playerDirection;
 
         private void OnEnable()
         {
             LeanTouch.OnFingerDown += OnFingerDown;
-            LeanTouch.OnFingerSwipe += OnFingerSwipe;
+            LeanTouch.OnFingerUpdate += OnFingerUpdate;
             LeanTouch.OnFingerUp += OnFingerUp;
         }
         
         private void OnDisable()
         {
             LeanTouch.OnFingerDown -= OnFingerDown;
-            LeanTouch.OnFingerSwipe -= OnFingerSwipe;
+            LeanTouch.OnFingerUpdate -= OnFingerUpdate;
             LeanTouch.OnFingerUp -= OnFingerUp;
         }
 
@@ -31,9 +38,9 @@ namespace Controllers
             isFingerSwipe = true;
         }
 
-        private void OnFingerSwipe(LeanFinger finger)
+        private void OnFingerUpdate(LeanFinger finger)
         {
-            directionVector = finger.ScreenPosition;
+            directionVector = finger.ScreenDelta;
         }
         
         private void OnFingerUp(LeanFinger obj)
@@ -43,44 +50,52 @@ namespace Controllers
 
         private void Update()
         {
-            if (!isFingerSwipe)
+            if (!isFingerSwipe || Mathf.Approximately(directionVector.x, 0.0f))
             {
                 return;
-            }
-            
-            Debug.Log(directionVector);
-        }
-        
-        private void OnPlayerKeyboardMovementInput()
-        {
-            if (Input.GetKey(KeyCode.W))
-            {
-                //directionVector += Vector2.up;
-            }
-            
-            if (Input.GetKey(KeyCode.S))
-            {
-                directionVector += Vector2.down;
-            }
-            
-            if (Input.GetKey(KeyCode.A))
-            {
-                directionVector += Vector2.left;
-            }
-            
-            if (Input.GetKey(KeyCode.D))
-            {
-                directionVector += Vector2.right;
             }
 
-            if (directionVector == Vector2.zero)
+            OnPlayerDirection();
+            
+        }
+
+        private void OnPlayerDirection()
+        {
+            //Debug.Log(directionVector.x < 0 ? $"SwipeLeft {directionVector.x}" : $"SwipeRight {directionVector.x}");
+            if (directionVector.x < -0.1f)
             {
-                return;
+                playerDirection = PlayerDirection.GOING_LEFT;
+            }
+
+            if (directionVector.x > 0.1f)
+            {
+                playerDirection = PlayerDirection.GOING_RIGHT;
             }
             
+            OnPlayerMovementInput();
+        }
+
+        private void OnPlayerMovementInput()
+        {
+            var playerShipDirection = Vector2.zero;
+            
+            switch (playerDirection)
+            {
+                case PlayerDirection.GOING_LEFT:
+                {
+                    playerShipDirection += Vector2.left;
+                    break;
+                }
+                case PlayerDirection.GOING_RIGHT:
+                {
+                    playerShipDirection += Vector2.right;
+                    break;
+                }
+            }
+
             EventBus<PlayerShipMoveEvent>.Raise(new PlayerShipMoveEvent
             {
-                Direction = directionVector,
+                Direction = playerShipDirection,
             });
         }
     }
