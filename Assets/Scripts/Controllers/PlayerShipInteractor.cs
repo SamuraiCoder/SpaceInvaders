@@ -11,10 +11,12 @@ namespace Controllers
         private enum PlayerDirection
         {
             GOING_LEFT,
-            GOING_RIGHT
+            GOING_RIGHT,
+            GOING_STATIC
         }
         
         private Vector2 directionVector;
+        private Vector2 oldDirectionVector;
         private Vector2 directionPlayerShip;
         private bool isFingerSwipe;
         private PlayerDirection playerDirection;
@@ -35,7 +37,7 @@ namespace Controllers
 
         private void OnFingerDown(LeanFinger finger)
         {
-            isFingerSwipe = true;
+            playerDirection = PlayerDirection.GOING_STATIC;
         }
 
         private void OnFingerUpdate(LeanFinger finger)
@@ -45,34 +47,27 @@ namespace Controllers
         
         private void OnFingerUp(LeanFinger obj)
         {
-            isFingerSwipe = false;
+            playerDirection = PlayerDirection.GOING_STATIC;
         }
 
         private void Update()
         {
-            if (!isFingerSwipe || Mathf.Approximately(directionVector.x, 0.0f))
-            {
-                return;
-            }
-
             OnPlayerDirection();
-            
+            OnPlayerMovementInput();
         }
 
         private void OnPlayerDirection()
         {
             //Debug.Log(directionVector.x < 0 ? $"SwipeLeft {directionVector.x}" : $"SwipeRight {directionVector.x}");
-            if (directionVector.x < -0.1f)
+            if (directionVector.x < -0.5f)
             {
                 playerDirection = PlayerDirection.GOING_LEFT;
             }
 
-            if (directionVector.x > 0.1f)
+            if (directionVector.x > 0.5f)
             {
                 playerDirection = PlayerDirection.GOING_RIGHT;
             }
-            
-            OnPlayerMovementInput();
         }
 
         private void OnPlayerMovementInput()
@@ -89,6 +84,11 @@ namespace Controllers
                 case PlayerDirection.GOING_RIGHT:
                 {
                     playerShipDirection += Vector2.right;
+                    break;
+                }
+                case PlayerDirection.GOING_STATIC:
+                {
+                    playerShipDirection = Vector2.zero;
                     break;
                 }
             }
