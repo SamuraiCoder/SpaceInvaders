@@ -93,6 +93,7 @@ namespace Services
             EventBus<SpawnEnemyEvent>.Raise(new SpawnEnemyEvent
             {
                 SpawnPosition = calculateSpawningPosition,
+                EnemyPosition = position,
                 EnemyName = $"{ConstValues.ENEMY_PREFIX_NAME}{position}",
                 SpriteString = rndSpriteColor,
                 Color = rndColor

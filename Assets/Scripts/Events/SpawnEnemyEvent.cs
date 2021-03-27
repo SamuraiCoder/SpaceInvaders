@@ -8,8 +8,7 @@ namespace Events
         public Vector2 SpawnPosition { get; set; }
         public string EnemyName { get; set; }
         public string SpriteString { get; set; }
-
         public ConstValues.ColorEnemyPool Color { get; set; }
-
+        public int EnemyPosition { get; set; }
     }
 }

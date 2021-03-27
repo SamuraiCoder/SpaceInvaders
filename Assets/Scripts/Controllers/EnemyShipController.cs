@@ -1,4 +1,5 @@
-﻿using Events;
+﻿using Data;
+using Events;
 using pEventBus;
 using UnityEngine;
 
@@ -31,7 +32,11 @@ namespace Controllers
         {
             if (touchingLeftLimit || touchingRightLimit)
             {
-              //Send event to change direction   
+              //Notify Move service a ship has touched a border
+              EventBus<EnemyBorderEvent>.Raise(new EnemyBorderEvent
+              {
+                  EnemyTouchedBorderName = gameObject.name
+              });
             }
             
             direction = enemyDirection;
