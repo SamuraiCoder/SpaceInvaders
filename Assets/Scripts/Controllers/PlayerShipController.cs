@@ -35,32 +35,32 @@ namespace Controllers
         {
             if (touchingLeftLimit && playerDirection == Vector2.left)
             {
-                OnPlayerDirection(Vector2.zero, 0.0f);
+                OnPlayerDirection(Vector2.zero);
                 return;
             }
             
             if (touchingRightLimit && playerDirection == Vector2.right)
             {
-                OnPlayerDirection(Vector2.zero, 0.0f);
+                OnPlayerDirection(Vector2.zero);
                 return;
             }
             
             if (touchingLeftLimit && direction == Vector2.left)
             {
-                OnPlayerDirection(Vector2.zero, 0.0f);
+                OnPlayerDirection(Vector2.zero);
                 return;
             }
             
             if (touchingRightLimit && direction == Vector2.right)
             {
-                OnPlayerDirection(Vector2.zero, 0.0f);
+                OnPlayerDirection(Vector2.zero);
                 return;
             }
 
-            OnPlayerDirection(playerDirection, playerSpeed);
+            OnPlayerDirection(playerDirection);
         }
 
-        private void OnPlayerDirection(Vector2 dir, float speed)
+        private void OnPlayerDirection(Vector2 dir)
         {
             direction = dir;
         }
