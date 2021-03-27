@@ -33,7 +33,7 @@ namespace Controllers
 
         private void OnCheckScreenLimits()
         {
-            var shipEntityWorldPos = gameEntitiesPositionService.GetEntityPosition(ConstValues.PLAYER_NAME);
+            var shipEntityWorldPos = gameEntitiesPositionService.GetEntityPosition(gameObject.name);
 
             var maxPosShip = shipEntityWorldPos.x;
             var halfShipWidth = ConstValues.PLAYER_WIDTH / 2;

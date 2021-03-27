@@ -10,7 +10,7 @@ namespace Behaviours
         
         private Vector2 lastEntityPosition;
         
-        void Update()
+        private void Update()
         {
             if (lastEntityPosition == (Vector2)transform.position)
             {
