@@ -68,6 +68,11 @@ namespace Controllers
             {
                 playerDirection = PlayerDirection.GOING_RIGHT;
             }
+
+            if (Mathf.Approximately(directionVector.x, 0.0f))
+            {
+                playerDirection = PlayerDirection.GOING_STATIC;
+            }
         }
 
         private void OnPlayerMovementInput()
