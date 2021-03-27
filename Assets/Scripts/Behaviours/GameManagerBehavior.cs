@@ -18,7 +18,7 @@ public class GameManagerBehavior : MonoBehaviour
         var levelData = new LevelDefinitionData
         {
             EnemiesPerRow = 5,
-            NumEnemies = 15
+            NumEnemies = 20
         };
         
         EnemySpawnerService.SpawnEnemiesByLevel(levelData);

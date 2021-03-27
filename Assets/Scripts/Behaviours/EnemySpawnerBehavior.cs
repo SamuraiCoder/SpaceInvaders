@@ -1,6 +1,7 @@
 ﻿using Events;
 using pEventBus;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Behaviours
 {
@@ -27,6 +28,7 @@ namespace Behaviours
         {
             var go = Instantiate(enemyPrefab, spawnEnemyEvent.SpawnPosition, transform.rotation, gameObject.transform);
             go.name = spawnEnemyEvent.EnemyName;
+            go.GetComponent<Image>().sprite = Resources.Load<Sprite>(spawnEnemyEvent.SpriteString);
         }
     }
 }

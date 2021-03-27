@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1839240620827436726}
   - component: {fileID: 6188685606704443447}
   m_Layer: 0
-  m_Name: EnemyShipRed
+  m_Name: EnemyShip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 230b03afb9975c2438132292915df585, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

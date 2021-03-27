@@ -5,4 +5,25 @@
     public const string ENEMY_PREFIX_NAME = "Enemy_";
     public const float SPACING_ENEMY_COLUMN = 150;
     public const float SPACING_ENEMY_ROW = 150;
+    public const string ENEMY_BLACK_1 = "Enemies/enemyBlack1";
+    public const string ENEMY_BLACK_2 = "Enemies/enemyBlack2";
+    public const string ENEMY_BLACK_3 = "Enemies/enemyBlack3";
+    public const string ENEMY_BLACK_4 = "Enemies/enemyBlack4";
+    public const string ENEMY_BLACK_5 = "Enemies/enemyBlack5";
+    public const string ENEMY_BLUE_1 = "Enemies/enemyBlue1";
+    public const string ENEMY_BLUE_2 = "Enemies/enemyBlue2";
+    public const string ENEMY_BLUE_3 = "Enemies/enemyBlue3";
+    public const string ENEMY_BLUE_4 = "Enemies/enemyBlue4";
+    public const string ENEMY_BLUE_5 = "Enemies/enemyBlue5";
+    public const string ENEMY_GREEN_1 = "Enemies/enemyGreen1";
+    public const string ENEMY_GREEN_2 = "Enemies/enemyGreen2";
+    public const string ENEMY_GREEN_3 = "Enemies/enemyGreen3";
+    public const string ENEMY_GREEN_4 = "Enemies/enemyGreen4";
+    public const string ENEMY_GREEN_5 = "Enemies/enemyGreen5";
+    public const string ENEMY_RED_1 = "Enemies/enemyRed1";
+    public const string ENEMY_RED_2 = "Enemies/enemyRed2";
+    public const string ENEMY_RED_3 = "Enemies/enemyRed3";
+    public const string ENEMY_RED_4 = "Enemies/enemyRed4";
+    public const string ENEMY_RED_5 = "Enemies/enemyRed5";
+    public enum ColorEnemyPool { BLACK, BLUE, GREEN, RED }
 }

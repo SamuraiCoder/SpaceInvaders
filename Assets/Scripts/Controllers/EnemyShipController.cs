@@ -29,6 +29,11 @@ namespace Controllers
 
         private void OnEnemyAIInputReceived()
         {
+            if (touchingLeftLimit || touchingRightLimit)
+            {
+              //Send event to change direction   
+            }
+            
             direction = enemyDirection;
             speed = enemySpeed;
         }
