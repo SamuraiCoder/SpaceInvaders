@@ -39,6 +39,8 @@ namespace Controllers
                   EnemyTouchLeft = touchingLeftLimit,
                   EnemyTouchRight = touchingRightLimit
               });
+              
+              Debug.Log($"Enemy {gameObject.name} touched!");
             }
             
             direction = enemyDirection;

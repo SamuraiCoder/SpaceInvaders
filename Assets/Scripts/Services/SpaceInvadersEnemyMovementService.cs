@@ -18,6 +18,7 @@ namespace Services
         private bool touchedLeft;
         private bool touchedRight;
         private bool needsToggleDirection;
+        private bool needsToGoDown;
         private bool hasStarted;
         private float lastCheck;
         private ConstValues.EnemyDirectionSense currentEnemyDirection;
@@ -59,29 +60,31 @@ namespace Services
 
             lastCheck = 0.0f;
 
-            CheckEnemyDirection();
+            EnemyDirection();
         }
 
-        private void CheckEnemyDirection()
+        private void EnemyDirection()
         {
             if (needsToggleDirection)
             {
                 Debug.Log("Needs toggle direction");
-                OnMoveEnemies();
-
+                OnToggleDirection();
                 needsToggleDirection = false;
+                
             }
-            else if (!touchedLeft && !touchedRight)
+            else if (needsToGoDown)
             {
-                Debug.Log($"NOT {touchedLeft} {touchedRight}");
-                OnMoveEnemies();
+                Debug.Log("Needs to go down");
+                needsToGoDown = false;
+                currentEnemyDirection = ConstValues.EnemyDirectionSense.GOING_DOWN;
+                needsToggleDirection = true;
             }
             else
             {
-                Debug.Log($"YES{touchedLeft} {touchedRight}");
-                OnToggleDirection();
-                OnMoveEnemies();
+                Debug.Log($"Normal movement. Walls: {touchedLeft} {touchedRight}");
             }
+            
+            OnMoveEnemies();
         }
 
         private void OnMoveEnemies()
@@ -150,8 +153,6 @@ namespace Services
                     break;
                 }
             }
-
-            needsToggleDirection = true;
         }
 
         private void StopEnemies()
@@ -184,6 +185,11 @@ namespace Services
         {
             touchedLeft = e.EnemyTouchLeft;
             touchedRight = e.EnemyTouchRight;
+
+            if (touchedLeft || touchedRight)
+            {
+                needsToGoDown = true;
+            }
         }
     }
 }
