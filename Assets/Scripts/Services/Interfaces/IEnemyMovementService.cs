@@ -2,7 +2,7 @@
 {
     public interface IEnemyMovementService
     {
-        void StartMovingEnemies();
+        void StartMovingEnemies(ConstValues.EnemyDirectionSense startingDirectionSense);
         void StopMovingEnemies();
     }
 }

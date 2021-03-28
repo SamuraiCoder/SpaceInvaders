@@ -35,7 +35,9 @@ namespace Controllers
               //Notify Move service a ship has touched a border
               EventBus<EnemyBorderEvent>.Raise(new EnemyBorderEvent
               {
-                  EnemyTouchedBorderName = gameObject.name
+                  EnemyTouchedBorderName = gameObject.name,
+                  EnemyTouchLeft = touchingLeftLimit,
+                  EnemyTouchRight = touchingRightLimit
               });
             }
             
