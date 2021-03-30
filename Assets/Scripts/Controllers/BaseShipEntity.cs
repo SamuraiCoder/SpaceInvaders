@@ -28,7 +28,7 @@ namespace Controllers
         
         private void MoveEntity()
         {
-            transform.Translate(direction * speed * Time.deltaTime);
+            transform.Translate(direction * speed * Time.smoothDeltaTime);
         }
 
         private void OnCheckScreenLimits()

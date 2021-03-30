@@ -51,7 +51,7 @@ namespace Services
                 return;
             }
             
-            lastCheck += Time.deltaTime;
+            lastCheck += Time.smoothDeltaTime;
 
             if (lastCheck < 1.0f)
             {
