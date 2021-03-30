@@ -28,5 +28,5 @@
     public enum ColorEnemyPool { BLACK, BLUE, GREEN, RED }
     public enum EnemyDirectionSense { GOING_RIGHT, GOING_LEFT, GOING_DOWN }
 
-    public const float ENEMY_SPEED = 4000.0f;
+    public const float ENEMY_SPEED = 1500.0f;
 }

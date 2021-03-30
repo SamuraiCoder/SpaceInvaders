@@ -23,6 +23,6 @@ public class GameManagerBehavior : MonoBehaviour
         };
         
         EnemySpawnerService.SpawnEnemiesByLevel(levelData);
-        EnemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_LEFT);
+        EnemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_RIGHT);
     }
 }

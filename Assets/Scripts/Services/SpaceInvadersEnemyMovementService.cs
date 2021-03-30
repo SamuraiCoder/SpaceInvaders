@@ -22,6 +22,7 @@ namespace Services
         private bool hasStarted;
         private float lastCheck;
         private ConstValues.EnemyDirectionSense currentEnemyDirection;
+        public bool TouchedEvent => touchedLeft || touchedRight;
         
         public SpaceInvadersEnemyMovementService(IPositionService gameEntitiesPositionService)
         {
@@ -70,17 +71,18 @@ namespace Services
                 Debug.Log("Needs toggle direction");
                 OnToggleDirection();
                 needsToggleDirection = false;
-                
+                needsToGoDown = false;
             }
             else if (needsToGoDown)
             {
                 Debug.Log("Needs to go down");
-                needsToGoDown = false;
                 currentEnemyDirection = ConstValues.EnemyDirectionSense.GOING_DOWN;
                 needsToggleDirection = true;
             }
             else
             {
+                touchedLeft = false;
+                touchedRight = false;
                 Debug.Log($"Normal movement. Walls: {touchedLeft} {touchedRight}");
             }
             
@@ -108,7 +110,7 @@ namespace Services
             foreach (var enemy in enemiesList)
             {
                 var enemyName = enemy.Value.EnemyName;
-                Vector2 newPosition = Vector2.zero;
+                var newPosition = Vector2.zero;
 
                 switch (directionSense)
                 {
@@ -152,6 +154,18 @@ namespace Services
                     currentEnemyDirection = ConstValues.EnemyDirectionSense.GOING_LEFT;
                     break;
                 }
+                case ConstValues.EnemyDirectionSense.GOING_DOWN:
+                {
+                    if (touchedLeft)
+                    {
+                        currentEnemyDirection = ConstValues.EnemyDirectionSense.GOING_RIGHT;
+                    }
+                    else if (touchedRight)
+                    {
+                        currentEnemyDirection = ConstValues.EnemyDirectionSense.GOING_LEFT;
+                    }
+                    break;
+                }
             }
         }
 
@@ -190,6 +204,7 @@ namespace Services
             {
                 needsToGoDown = true;
             }
+
         }
     }
 }
