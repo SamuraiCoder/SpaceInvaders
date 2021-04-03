@@ -1,5 +1,4 @@
-﻿using System;
-using pEventBus;
+﻿using pEventBus;
 using Events;
 using Lean.Touch;
 using UnityEngine;
@@ -23,6 +22,7 @@ namespace Controllers
 
         private void OnEnable()
         {
+            LeanTouch.OnFingerTap += OnFingerTap;
             LeanTouch.OnFingerDown += OnFingerDown;
             LeanTouch.OnFingerUpdate += OnFingerUpdate;
             LeanTouch.OnFingerUp += OnFingerUp;
@@ -30,6 +30,7 @@ namespace Controllers
         
         private void OnDisable()
         {
+            LeanTouch.OnFingerTap += OnFingerTap;
             LeanTouch.OnFingerDown -= OnFingerDown;
             LeanTouch.OnFingerUpdate -= OnFingerUpdate;
             LeanTouch.OnFingerUp -= OnFingerUp;
@@ -102,6 +103,16 @@ namespace Controllers
             {
                 Direction = playerShipDirection,
             });
+        }
+        
+        private void OnFingerTap(LeanFinger obj)
+        {
+            if (!obj.Tap)
+            {
+                return;
+            }
+            
+            EventBus<ShootLaserEvent>.Raise(new ShootLaserEvent());
         }
     }
 }
