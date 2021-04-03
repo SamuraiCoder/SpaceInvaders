@@ -27,6 +27,6 @@
     public const string ENEMY_RED_5 = "Enemies/enemyRed5";
     public enum ColorEnemyPool { BLACK, BLUE, GREEN, RED }
     public enum EnemyDirectionSense { GOING_RIGHT, GOING_LEFT, GOING_DOWN }
-
     public const float ENEMY_SPEED = 1500.0f;
+    public const float AI_ENEMY_PACE_CHECK = 1.0f;
 }

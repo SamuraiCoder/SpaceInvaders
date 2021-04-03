@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Data;
 using Events;
 using pEventBus;
@@ -21,7 +20,9 @@ namespace Services
         private bool needsToGoDown;
         private bool hasStarted;
         private float lastCheck;
+        private float paceCheck;
         private ConstValues.EnemyDirectionSense currentEnemyDirection;
+        
         public bool TouchedEvent => touchedLeft || touchedRight;
         
         public SpaceInvadersEnemyMovementService(IPositionService gameEntitiesPositionService)
@@ -31,6 +32,8 @@ namespace Services
             enemiesList = new Dictionary<int, EnemyData>();
             
             EventBus.Register(this);
+
+            paceCheck = ConstValues.AI_ENEMY_PACE_CHECK;
         }
         
         public void StartMovingEnemies(ConstValues.EnemyDirectionSense startingDirectionSense)
@@ -53,7 +56,7 @@ namespace Services
             
             lastCheck += Time.smoothDeltaTime;
 
-            if (lastCheck < 1.0f)
+            if (lastCheck < paceCheck)
             {
                 StopEnemies();
                 return;
@@ -61,21 +64,19 @@ namespace Services
 
             lastCheck = 0.0f;
 
-            EnemyDirection();
+            EnemyMove();
         }
 
-        private void EnemyDirection()
+        private void EnemyMove()
         {
             if (needsToggleDirection)
             {
-                Debug.Log("Needs toggle direction");
                 OnToggleDirection();
                 needsToggleDirection = false;
                 needsToGoDown = false;
             }
             else if (needsToGoDown)
             {
-                Debug.Log("Needs to go down");
                 currentEnemyDirection = ConstValues.EnemyDirectionSense.GOING_DOWN;
                 needsToggleDirection = true;
             }
@@ -83,7 +84,6 @@ namespace Services
             {
                 touchedLeft = false;
                 touchedRight = false;
-                Debug.Log($"Normal movement. Walls: {touchedLeft} {touchedRight}");
             }
             
             OnMoveEnemies();

@@ -38,9 +38,9 @@ namespace Controllers
         {
             if (touchingLeftLimit || touchingRightLimit)
             {
+                //Note: We send just the first event that touched screen until we release it again
                 if (!enemyMovementService.TouchedEvent)
                 {
-                    //Notify Move service a ship has touched a border
                     EventBus<EnemyBorderEvent>.Raise(new EnemyBorderEvent
                     {
                         EnemyTouchedBorderName = gameObject.name,
@@ -48,7 +48,7 @@ namespace Controllers
                         EnemyTouchRight = touchingRightLimit
                     });
                     
-                    Debug.Log($"Enemy {gameObject.name} touched!");
+                    //Debug.Log($"Enemy {gameObject.name} touched!");
                 }
             }
             
