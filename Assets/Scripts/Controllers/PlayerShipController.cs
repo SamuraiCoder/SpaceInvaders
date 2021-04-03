@@ -11,16 +11,15 @@ namespace Controllers
 
         private Vector2 playerDirection;
         private ShootingEntityBehavior shootingBehavior;
+        private int laserProjectileLayer;
 
         protected override void Start()
         {
             base.Start();
-            
             EventBus.Register(this);
-            
             speed = playerSpeed;
-
             shootingBehavior = GetComponent<ShootingEntityBehavior>();
+            laserProjectileLayer = LayerMask.NameToLayer(ConstValues.LASER_ENEMY_LAYER);
         }
 
         private void OnDestroy()
@@ -77,6 +76,29 @@ namespace Controllers
         public void OnEvent(ShootLaserPlayerEvent e)
         {
             shootingBehavior.ShootLaserProjectile(ConstValues.ShootingEntityType.PLAYER);
+        }
+        
+        private void OnTriggerEnter2D(Collider2D obj)
+        {
+            if (obj.gameObject.layer != laserProjectileLayer)
+            {
+                return;
+            }
+            
+            //Destroy laser
+            Destroy(obj.gameObject);
+            
+            OnDestroyPlayerShip();
+            
+            EventBus<PlayerShipDestroyedEvent>.Raise(new PlayerShipDestroyedEvent());
+        }
+        
+        private void OnDestroyPlayerShip()
+        {
+            LeanTween.rotateAround(gameObject, Vector3.forward, 360, 0.25f).setOnComplete(() =>
+            {
+                Destroy(gameObject);
+            });
         }
     }
 }
