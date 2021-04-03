@@ -58,31 +58,31 @@ namespace Behaviours
             
             var newEnemyData = new EnemyData();
             
-            if (upCollider != null && upCollider.gameObject.layer == enemyLayer)
+            if (upCollider != null && upCollider.gameObject.activeSelf && upCollider.gameObject.layer == enemyLayer)
             {
                 //Debug.Log($"I am {gameObject.name} and I have a friend {upCollider.gameObject.name} UP");
                 newEnemyData.FriendEnemyUp = upCollider.gameObject.name;
             }
             
-            if (downCollider != null && downCollider.gameObject.layer == enemyLayer)
+            if (downCollider != null && downCollider.gameObject.activeSelf && downCollider.gameObject.layer == enemyLayer)
             {
                 //Debug.Log($"I am {gameObject.name} and I have a friend {downCollider.gameObject.name} DOWN");
                 newEnemyData.FriendEnemyDown = downCollider.gameObject.name;
             }
             
-            if (leftCollider != null && leftCollider.gameObject.layer == enemyLayer)
+            if (leftCollider != null && leftCollider.gameObject.activeSelf && leftCollider.gameObject.layer == enemyLayer)
             {
                 //Debug.Log($"I am {gameObject.name} and I have a friend {leftCollider.gameObject.name} LEFT");
                 newEnemyData.FriendEnemyLeft = leftCollider.gameObject.name;
             }
             
-            if (rightCollider != null && rightCollider.gameObject.layer == enemyLayer)
+            if (rightCollider != null && rightCollider.gameObject.activeSelf && rightCollider.gameObject.layer == enemyLayer)
             {
                 //Debug.Log($"I am {gameObject.name} and I have a friend {rightCollider.gameObject.name} RIGHT");
                 newEnemyData.FriendEnemyRight = rightCollider.gameObject.name;
             }
             
-            //Notify AIMovementService for current ships surroundings
+            //Notify AIMovementService for current ship surroundings
             EventBus<EnemySendSurroundingsEvent>.Raise(new EnemySendSurroundingsEvent
             {
                 EnemyShipName = gameObject.name,
