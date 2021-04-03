@@ -9,31 +9,31 @@ using Zenject;
 namespace Services
 {
     public class SpaceInvadersEnemyMovementService : IEnemyMovementService, ITickable, IEventReceiver<SpawnEnemyEvent>,
-        IEventReceiver<EnemyBorderEvent>
+        IEventReceiver<EnemyBorderEvent>, IEventReceiver<EnemySendSurroundingsEvent>
     {
         [Inject] public IPositionService gameEntitiesPositionService;
 
-        private Dictionary<int, EnemyData> enemiesList;
+        private Dictionary<string, EnemyData> enemiesList;
         private bool touchedLeft;
         private bool touchedRight;
         private bool needsToggleDirection;
         private bool needsToGoDown;
         private bool hasStarted;
-        private float lastCheck;
-        private float paceCheck;
+        private float lastCheckAIMove;
+        private float paceCheckAIMove;
         private ConstValues.EnemyDirectionSense currentEnemyDirection;
+        private float lastCheckAIDetector;
+        private float paceCheckAIDetector;
         
         public bool TouchedEvent => touchedLeft || touchedRight;
         
         public SpaceInvadersEnemyMovementService(IPositionService gameEntitiesPositionService)
         {
             this.gameEntitiesPositionService = gameEntitiesPositionService;
-
-            enemiesList = new Dictionary<int, EnemyData>();
-            
+            enemiesList = new Dictionary<string, EnemyData>();
             EventBus.Register(this);
-
-            paceCheck = ConstValues.AI_ENEMY_PACE_CHECK;
+            paceCheckAIMove = ConstValues.AI_ENEMY_PACE_CHECK;
+            paceCheckAIDetector = ConstValues.AI_ENEMY_NOTIFY_SURROUNDINGS_CHECK;
         }
         
         public void StartMovingEnemies(ConstValues.EnemyDirectionSense startingDirectionSense)
@@ -54,17 +54,23 @@ namespace Services
                 return;
             }
             
-            lastCheck += Time.smoothDeltaTime;
+            AIMoveEnemies();
+            AiEnemyShipDetector();
+        }
+        
+        private void AIMoveEnemies()
+        {
+            lastCheckAIMove += Time.smoothDeltaTime;
 
-            if (lastCheck < paceCheck)
+            if (lastCheckAIMove < paceCheckAIMove)
             {
                 StopEnemies();
                 return;
             }
 
-            lastCheck = 0.0f;
+            lastCheckAIMove = 0.0f;
 
-            EnemyMove();
+            EnemyMove(); 
         }
 
         private void EnemyMove()
@@ -86,10 +92,10 @@ namespace Services
                 touchedRight = false;
             }
             
-            OnMoveEnemies();
+            OnMoveEnemiesDirection();
         }
 
-        private void OnMoveEnemies()
+        private void OnMoveEnemiesDirection()
         {
             switch (currentEnemyDirection)
             {
@@ -184,10 +190,32 @@ namespace Services
                 });
             } 
         }
+        
+        private void AiEnemyShipDetector()
+        {
+            lastCheckAIDetector += Time.smoothDeltaTime;
+
+            if (lastCheckAIDetector < paceCheckAIDetector)
+            {
+                return;
+            }
+
+            lastCheckAIDetector = 0.0f;
+            
+            //Send broadcast msg to all the ships to inform their surroundings
+            foreach (var enemy in enemiesList)
+            {
+                var enemyName = enemy.Value.EnemyName;
+                EventBus<EnemyNotifySurroundingsEvent>.Raise(new EnemyNotifySurroundingsEvent
+                {
+                    EnemyShipName = enemyName
+                });
+            }
+        }
 
         public void OnEvent(SpawnEnemyEvent e)
         {
-            enemiesList[e.EnemyPosition] = new EnemyData
+            enemiesList[e.EnemyName] = new EnemyData
             {
                 EnemyColor = e.Color,
                 EnemyName = e.EnemyName,
@@ -204,7 +232,24 @@ namespace Services
             {
                 needsToGoDown = true;
             }
+        }
 
+        public void OnEvent(EnemySendSurroundingsEvent e)
+        {
+            var enemyData = enemiesList[e.EnemyShipName];
+
+            var newEnemyData = new EnemyData
+            {
+                EnemyName = enemyData.EnemyName,
+                EnemyColor = enemyData.EnemyColor,
+                FriendEnemyDown = e.EnemyDataInfo.FriendEnemyDown,
+                FriendEnemyLeft = e.EnemyDataInfo.FriendEnemyLeft,
+                FriendEnemyRight = e.EnemyDataInfo.FriendEnemyRight,
+                FriendEnemyUp = e.EnemyDataInfo.FriendEnemyUp,
+                IsEnemyDead = enemyData.IsEnemyDead
+            };
+
+            enemiesList[e.EnemyShipName] = newEnemyData;
         }
     }
 }

@@ -29,7 +29,9 @@
     public enum EnemyDirectionSense { GOING_RIGHT, GOING_LEFT, GOING_DOWN }
     public const float ENEMY_SPEED = 1500.0f;
     public const float AI_ENEMY_PACE_CHECK = 1.0f;
+    public const float AI_ENEMY_NOTIFY_SURROUNDINGS_CHECK = 2.0f;
     public enum ShootingEntityType { PLAYER, ENEMY }
     public const float LASER_COOLING_ENEMY = 8.0f;
     public const float LASER_COOLING_PLAYER = 3.0f;
+    public const string ENEMY_LAYER = "EnemyShip";
 }
