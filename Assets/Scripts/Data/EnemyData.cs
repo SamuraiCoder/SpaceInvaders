@@ -4,7 +4,6 @@
     {
         public string EnemyName { get; set; }
         public ConstValues.ColorEnemyPool EnemyColor { get; set; }
-        public bool IsEnemyDead { get; set; }
         public string FriendEnemyUp { get; set; }
         public string FriendEnemyDown { get; set; }
         public string FriendEnemyLeft { get; set; }

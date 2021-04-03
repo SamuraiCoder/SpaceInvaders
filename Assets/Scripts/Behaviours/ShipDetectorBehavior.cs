@@ -13,6 +13,7 @@ namespace Behaviours
         private float downRayDistance;
         private float leftRayDistance;
         private float rightRayDistance;
+        private int enemyLayer;
         private void Start()
         {
             rb2D = GetComponent<Rigidbody2D>();
@@ -22,6 +23,8 @@ namespace Behaviours
             downRayDistance = ConstValues.SPACING_ENEMY_ROW;
             leftRayDistance = ConstValues.SPACING_ENEMY_COLUMN;
             rightRayDistance = ConstValues.SPACING_ENEMY_COLUMN;
+            
+            enemyLayer = LayerMask.NameToLayer(ConstValues.ENEMY_LAYER);
         }
 
         private void OnDestroy()
@@ -48,9 +51,7 @@ namespace Behaviours
             RaycastHit2D downHit = Physics2D.Raycast(position, Vector2.down, downRayDistance);
             RaycastHit2D leftHit = Physics2D.Raycast(position, Vector2.left, leftRayDistance);
             RaycastHit2D rightHit = Physics2D.Raycast(position, Vector2.right, rightRayDistance);
-
-            var enemyLayer = LayerMask.NameToLayer(ConstValues.ENEMY_LAYER);
-
+            
             var upCollider = upHit.collider;
             var downCollider = downHit.collider;
             var leftCollider = leftHit.collider;

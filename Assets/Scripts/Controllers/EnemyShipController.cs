@@ -5,17 +5,21 @@ using pEventBus;
 using Services;
 using Services.Interfaces;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Controllers
 {
-    public class EnemyShipController : BaseShipEntity, IEventReceiver<EnemyShipMoveEvent>, IEventReceiver<ShootLaserEnemyEvent>
+    public class EnemyShipController : BaseShipEntity, IEventReceiver<EnemyShipMoveEvent>, IEventReceiver<ShootLaserEnemyEvent>,
+        IEventReceiver<EnemyCascadeEffectEvent>
     {
         [Inject] private IEnemyMovementService iMovementService;
         private float enemySpeed;
         private Vector2 enemyDirection;
         private SpaceInvadersEnemyMovementService enemyMovementService;
         private ShootingEntityBehavior shootingBehavior;
+        private int laserProjectileLayer;
+        private bool beingDestroyed;
 
         protected override void Start()
         {
@@ -23,6 +27,7 @@ namespace Controllers
             EventBus.Register(this);
             enemyMovementService = iMovementService as SpaceInvadersEnemyMovementService;
             shootingBehavior = GetComponent<ShootingEntityBehavior>();
+            laserProjectileLayer = LayerMask.NameToLayer(ConstValues.LASER_LAYER);
         }
 
         private void OnDestroy()
@@ -76,6 +81,50 @@ namespace Controllers
             }
             
             shootingBehavior.ShootLaserProjectile(ConstValues.ShootingEntityType.ENEMY);
+        }
+        
+        private void OnTriggerEnter2D(Collider2D obj)
+        {
+            if (obj.gameObject.layer != laserProjectileLayer)
+            {
+                return;
+            }
+            
+            //Destroy laser
+            Destroy(obj.gameObject);
+
+            if (beingDestroyed)
+            {
+                return;
+            }
+            
+            beingDestroyed = true;
+
+            OnDestroyEnemyShip();
+            
+            EventBus<EnemyShipDestroyedEvent>.Raise(new EnemyShipDestroyedEvent
+            {
+                EnemyShipName = gameObject.name
+            });
+        }
+
+        private void OnDestroyEnemyShip()
+        {
+            //Animate and destroy ship
+            LeanTween.scale(gameObject, Vector2.one * 1.50f, 0.5f).setEasePunch().setOnComplete(() =>
+            {
+                Destroy(gameObject);
+            }); 
+        }
+
+        public void OnEvent(EnemyCascadeEffectEvent e)
+        {
+            if (e.EnemyShipName != gameObject.name)
+            {
+                return;
+            }
+            
+            OnDestroyEnemyShip();
         }
     }
 }

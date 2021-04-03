@@ -34,4 +34,5 @@
     public const float LASER_COOLING_ENEMY = 8.0f;
     public const float LASER_COOLING_PLAYER = 3.0f;
     public const string ENEMY_LAYER = "EnemyShip";
+    public const string LASER_LAYER = "LaserProjectile";
 }

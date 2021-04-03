@@ -20,7 +20,7 @@ public class GameManagerBehavior : MonoBehaviour
         {
             EnemiesPerRow = 5,
             NumEnemies = 20,
-            EnemyShootPace = 5
+            EnemyShootPace = 2.5f
         };
         
         EnemyDirector.StartLevel(levelData);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Data;
 using Events;
 using pEventBus;
@@ -9,7 +10,7 @@ using Zenject;
 namespace Services
 {
     public class SpaceInvadersEnemyMovementService : IEnemyMovementService, ITickable, IEventReceiver<SpawnEnemyEvent>,
-        IEventReceiver<EnemyBorderEvent>, IEventReceiver<EnemySendSurroundingsEvent>
+        IEventReceiver<EnemyBorderEvent>, IEventReceiver<EnemySendSurroundingsEvent>, IEventReceiver<EnemyShipDestroyedEvent>
     {
         private Dictionary<string, EnemyData> enemiesList;
         private bool touchedLeft;
@@ -216,7 +217,6 @@ namespace Services
             {
                 EnemyColor = e.Color,
                 EnemyName = e.EnemyName,
-                IsEnemyDead = false
             };
         }
 
@@ -243,7 +243,6 @@ namespace Services
                 FriendEnemyLeft = e.EnemyDataInfo.FriendEnemyLeft,
                 FriendEnemyRight = e.EnemyDataInfo.FriendEnemyRight,
                 FriendEnemyUp = e.EnemyDataInfo.FriendEnemyUp,
-                IsEnemyDead = enemyData.IsEnemyDead
             };
 
             enemiesList[e.EnemyShipName] = newEnemyData;
@@ -259,16 +258,88 @@ namespace Services
                 {
                     continue;
                 }
-
-                if (enemy.Value.IsEnemyDead)
-                {
-                    continue;
-                }
                 
                 enemiesAbleToShoot.Add(enemy.Key);
             }
 
             return enemiesAbleToShoot;
+        }
+
+        public void OnEvent(EnemyShipDestroyedEvent e)
+        {
+            if (!enemiesList.ContainsKey(e.EnemyShipName))
+            {
+                return;
+            }
+
+            var enemyColor = enemiesList[e.EnemyShipName].EnemyColor;
+            var enemiesListToDestroy = new List<string>();
+            OnCascadeEffect(e.EnemyShipName, enemyColor, ref enemiesListToDestroy);
+            OnDestroyEnemiesEffect(enemiesListToDestroy);
+        }
+
+        private void OnDestroyEnemiesEffect(List<string> enemiesListToDestroy)
+        {
+            foreach (var enemyName in enemiesListToDestroy)
+            {
+                if (!enemiesList.ContainsKey(enemyName))
+                {
+                    continue;
+                }
+                
+                EventBus<EnemyCascadeEffectEvent>.Raise(new EnemyCascadeEffectEvent
+                {
+                    EnemyShipName = enemyName
+                });
+                    
+                enemiesList.Remove(enemyName);
+            }
+        }
+
+        private void OnCascadeEffect(string enemyShipName, ConstValues.ColorEnemyPool enemyColor, ref List<string> enemiesListToDestroy)
+        {
+            var enemyData = enemiesList[enemyShipName];
+            var neighbours = GetNeighbours(enemyData);
+            foreach (var neighbour in neighbours)
+            {
+                var neighbourData = enemiesList[neighbour];
+                if (neighbourData.EnemyColor == enemyColor)
+                {
+                    if (enemiesListToDestroy.Contains(neighbour))
+                    {
+                        continue;
+                    }
+                    enemiesListToDestroy.Add(neighbour);
+                    OnCascadeEffect(neighbour, neighbourData.EnemyColor, ref enemiesListToDestroy);
+                }
+            }
+        }
+
+        private List<string> GetNeighbours(EnemyData enemyData)
+        {
+            var neighbours = new List<string>();
+
+            if (enemyData.FriendEnemyDown != null)
+            {
+                neighbours.Add(enemyData.FriendEnemyDown);
+            }
+            
+            if (enemyData.FriendEnemyUp != null)
+            {
+                neighbours.Add(enemyData.FriendEnemyUp);
+            }
+            
+            if (enemyData.FriendEnemyLeft != null)
+            {
+                neighbours.Add(enemyData.FriendEnemyLeft);
+            }
+            
+            if (enemyData.FriendEnemyRight != null)
+            {
+                neighbours.Add(enemyData.FriendEnemyRight);
+            }
+
+            return neighbours;
         }
     }
 }
