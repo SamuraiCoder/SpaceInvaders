@@ -5,8 +5,8 @@ using Zenject;
 
 public class GameManagerBehavior : MonoBehaviour
 {
-    [Inject] public IEnemySpawnerService EnemySpawnerService;
-    [Inject] public IEnemyMovementService EnemyMovementService;
+    [Inject] public IEnemyDirector EnemyDirector;
+    
     private void Start()
     {
         StartCoroutine(OnDelayedStart());
@@ -19,10 +19,10 @@ public class GameManagerBehavior : MonoBehaviour
         var levelData = new LevelDefinitionData
         {
             EnemiesPerRow = 5,
-            NumEnemies = 20
+            NumEnemies = 20,
+            EnemyShootPace = 5
         };
         
-        EnemySpawnerService.SpawnEnemiesByLevel(levelData);
-        EnemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_RIGHT);
+        EnemyDirector.StartLevel(levelData);
     }
 }

@@ -12,6 +12,7 @@ public class MainSceneInstallers : MonoInstaller
         Container.Bind<IPositionService>().To<GameEntitiesPositionService>().AsSingle().NonLazy();
         Container.Bind<IEnemySpawnerService>().To<SpaceInvadersEnemySpawnerService>().AsSingle().NonLazy();
         Container.Bind(typeof(IEnemyMovementService), typeof(ITickable)).To<SpaceInvadersEnemyMovementService>().AsSingle().NonLazy();
+        Container.Bind(typeof(IEnemyDirector), typeof(ITickable)).To<SpaceInvadersDirectorService>().AsSingle().NonLazy();
     }
 
     public class Greeter

@@ -14,8 +14,8 @@ namespace Behaviours
 
         private void OnShootingEntity(ConstValues.ShootingEntityType shootingEntityType)
         {
-            var currentTransform = shootingEntityPosition.transform;
-            var laser = Instantiate(laserProjectilePrefab, currentTransform.position, currentTransform.rotation, currentTransform);
+            var currentTransform = gameObject.transform;
+            var laser = Instantiate(laserProjectilePrefab, shootingEntityPosition.transform.position, shootingEntityPosition.transform.rotation, currentTransform.parent);
             var laserBehavior = laser.GetComponent<LaserBehavior>();
             laserBehavior.SetShootingEntityType(shootingEntityType);
         }

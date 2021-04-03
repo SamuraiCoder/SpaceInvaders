@@ -11,8 +11,6 @@ namespace Services
     public class SpaceInvadersEnemyMovementService : IEnemyMovementService, ITickable, IEventReceiver<SpawnEnemyEvent>,
         IEventReceiver<EnemyBorderEvent>, IEventReceiver<EnemySendSurroundingsEvent>
     {
-        [Inject] public IPositionService gameEntitiesPositionService;
-
         private Dictionary<string, EnemyData> enemiesList;
         private bool touchedLeft;
         private bool touchedRight;
@@ -27,9 +25,8 @@ namespace Services
         
         public bool TouchedEvent => touchedLeft || touchedRight;
         
-        public SpaceInvadersEnemyMovementService(IPositionService gameEntitiesPositionService)
+        public SpaceInvadersEnemyMovementService()
         {
-            this.gameEntitiesPositionService = gameEntitiesPositionService;
             enemiesList = new Dictionary<string, EnemyData>();
             EventBus.Register(this);
             paceCheckAIMove = ConstValues.AI_ENEMY_PACE_CHECK;
@@ -46,7 +43,7 @@ namespace Services
         {
             hasStarted = false;
         }
-
+        
         public void Tick()
         {
             if (!hasStarted)
@@ -250,6 +247,28 @@ namespace Services
             };
 
             enemiesList[e.EnemyShipName] = newEnemyData;
+        }
+        
+        public List<string> GetEnemiesAbleToShoot()
+        {
+            var enemiesAbleToShoot = new List<string>();
+
+            foreach (var enemy in enemiesList)
+            {
+                if (enemy.Value.FriendEnemyDown != null)
+                {
+                    continue;
+                }
+
+                if (enemy.Value.IsEnemyDead)
+                {
+                    continue;
+                }
+                
+                enemiesAbleToShoot.Add(enemy.Key);
+            }
+
+            return enemiesAbleToShoot;
         }
     }
 }
