@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Controllers
 {
-    public class PlayerShipController : BaseShipEntity, IEventReceiver<PlayerShipMoveEvent>, IEventReceiver<ShootLaserEvent>
+    public class PlayerShipController : BaseShipEntity, IEventReceiver<PlayerShipMoveEvent>, IEventReceiver<ShootLaserPlayerEvent>
     {
         [SerializeField] private float playerSpeed;
 
@@ -74,7 +74,7 @@ namespace Controllers
             playerDirection = e.Direction;
         }
 
-        public void OnEvent(ShootLaserEvent e)
+        public void OnEvent(ShootLaserPlayerEvent e)
         {
             shootingBehavior.ShootLaserProjectile(ConstValues.ShootingEntityType.PLAYER);
         }

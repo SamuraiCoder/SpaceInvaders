@@ -2,7 +2,7 @@
 
 namespace Events
 {
-    public struct ShootLaserEvent : IEvent
+    public struct ShootLaserPlayerEvent : IEvent
     {
     }
 }

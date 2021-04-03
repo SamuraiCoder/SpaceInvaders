@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using Behaviours;
+using Data;
 using Events;
 using pEventBus;
 using Services;
@@ -8,18 +9,20 @@ using Zenject;
 
 namespace Controllers
 {
-    public class EnemyShipController : BaseShipEntity, IEventReceiver<EnemyShipMoveEvent>
+    public class EnemyShipController : BaseShipEntity, IEventReceiver<EnemyShipMoveEvent>, IEventReceiver<ShootLaserEnemyEvent>
     {
         [Inject] private IEnemyMovementService iMovementService;
         private float enemySpeed;
         private Vector2 enemyDirection;
         private SpaceInvadersEnemyMovementService enemyMovementService;
+        private ShootingEntityBehavior shootingBehavior;
 
         protected override void Start()
         {
             base.Start();
             EventBus.Register(this);
             enemyMovementService = iMovementService as SpaceInvadersEnemyMovementService;
+            shootingBehavior = GetComponent<ShootingEntityBehavior>();
         }
 
         private void OnDestroy()
@@ -47,8 +50,6 @@ namespace Controllers
                         EnemyTouchLeft = touchingLeftLimit,
                         EnemyTouchRight = touchingRightLimit
                     });
-                    
-                    //Debug.Log($"Enemy {gameObject.name} touched!");
                 }
             }
             
@@ -65,6 +66,16 @@ namespace Controllers
             
             enemyDirection = e.Direction;
             enemySpeed = e.Speed;
+        }
+
+        public void OnEvent(ShootLaserEnemyEvent e)
+        {
+            if (e.EnemyShipName != gameObject.name)
+            {
+                return;
+            }
+            
+            shootingBehavior.ShootLaserProjectile(ConstValues.ShootingEntityType.ENEMY);
         }
     }
 }

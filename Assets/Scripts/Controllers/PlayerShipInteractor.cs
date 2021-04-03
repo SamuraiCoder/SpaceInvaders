@@ -59,7 +59,6 @@ namespace Controllers
 
         private void OnPlayerDirection()
         {
-            //Debug.Log(directionVector.x < 0 ? $"SwipeLeft {directionVector.x}" : $"SwipeRight {directionVector.x}");
             if (directionVector.x < -0.5f)
             {
                 playerDirection = PlayerDirection.GOING_LEFT;
@@ -112,7 +111,7 @@ namespace Controllers
                 return;
             }
             
-            EventBus<ShootLaserEvent>.Raise(new ShootLaserEvent());
+            EventBus<ShootLaserPlayerEvent>.Raise(new ShootLaserPlayerEvent());
         }
     }
 }
