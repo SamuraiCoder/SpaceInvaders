@@ -1,6 +1,6 @@
 ﻿namespace Services.Interfaces
 {
-    public interface IEnemyDirector
+    public interface IGameDirector
     {
         void StartLevel(LevelDefinitionData levelData);
         void FinishLevel();

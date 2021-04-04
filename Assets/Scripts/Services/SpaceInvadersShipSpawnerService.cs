@@ -9,7 +9,7 @@ using Random = System.Random;
 
 namespace Services
 {
-    public class SpaceInvadersEnemySpawnerService : IEnemySpawnerService
+    public class SpaceInvadersShipSpawnerService : IShipSpawnerService
     {
         [Inject] public IPositionService gameEntitiesPositionService;
         
@@ -23,7 +23,7 @@ namespace Services
         private List<string> enemySpritesPoolRed;
         private Random random;
         
-        public SpaceInvadersEnemySpawnerService(IPositionService gameEntitiesPositionService)
+        public SpaceInvadersShipSpawnerService(IPositionService gameEntitiesPositionService)
         {
             this.gameEntitiesPositionService = gameEntitiesPositionService;
 
@@ -83,7 +83,16 @@ namespace Services
                 OnSpawnEnemy(i);
             }
         }
-        
+
+        public void SpawnPlayer()
+        {
+            var playerStartingPosition = gameEntitiesPositionService.GetEntityPosition("StartingPlayerPosition");
+            EventBus<SpawnPlayerEvent>.Raise(new SpawnPlayerEvent
+            {
+                SpawnPosition = playerStartingPosition
+            });
+        }
+
         private void OnSpawnEnemy(int position)
         {
             var calculateSpawningPosition = GetSpawnPosition();

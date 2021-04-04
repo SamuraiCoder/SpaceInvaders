@@ -8,5 +8,6 @@
         public string FriendEnemyDown { get; set; }
         public string FriendEnemyLeft { get; set; }
         public string FriendEnemyRight { get; set; }
+        public int Score { get; set; }
     }
 }

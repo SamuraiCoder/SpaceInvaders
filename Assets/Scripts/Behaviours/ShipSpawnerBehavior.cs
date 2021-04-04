@@ -5,9 +5,10 @@ using UnityEngine.UI;
 
 namespace Behaviours
 {
-    public class EnemySpawnerBehavior : MonoBehaviour, IEventReceiver<SpawnEnemyEvent>
+    public class ShipSpawnerBehavior : MonoBehaviour, IEventReceiver<SpawnEnemyEvent>, IEventReceiver<SpawnPlayerEvent>
     {
         [SerializeField] private GameObject enemyPrefab;
+        [SerializeField] private GameObject playerPrefab;
 
         private void Start()
         {
@@ -29,6 +30,17 @@ namespace Behaviours
             var go = Instantiate(enemyPrefab, spawnEnemyEvent.SpawnPosition, transform.rotation, gameObject.transform);
             go.name = spawnEnemyEvent.EnemyName;
             go.GetComponent<Image>().sprite = Resources.Load<Sprite>(spawnEnemyEvent.SpriteString);
+        }
+
+        public void OnEvent(SpawnPlayerEvent e)
+        {
+            OnSpawnPlayer(e);
+        }
+
+        private void OnSpawnPlayer(SpawnPlayerEvent spawnPlayerEvent)
+        {
+            var go = Instantiate(playerPrefab, spawnPlayerEvent.SpawnPosition, transform.rotation, gameObject.transform.parent);
+            go.name = ConstValues.PLAYER_NAME;
         }
     }
 }

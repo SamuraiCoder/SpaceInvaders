@@ -7,27 +7,28 @@ using Random = System.Random;
 
 namespace Services
 {
-    public class SpaceInvadersDirectorService : IEnemyDirector, ITickable, IEventReceiver<PlayerShipDestroyedEvent>
+    public class SpaceInvadersDirectorService : IGameDirector, ITickable, IEventReceiver<PlayerShipDestroyedEvent>
     {
         [Inject] private IEnemyMovementService enemyMovementService;
-        [Inject] private IEnemySpawnerService enemySpanwerService;
+        [Inject] private IShipSpawnerService shipSpanwerService;
         
         private bool hasStarted;
         private float lastCheckAiShoot;
         private float paceCheckAiShoot;
         private Random random;
 
-        public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, IEnemySpawnerService enemySpanwerService)
+        public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, IShipSpawnerService shipSpanwerService)
         {
             this.enemyMovementService = enemyMovementService;
-            this.enemySpanwerService = enemySpanwerService;
+            this.shipSpanwerService = shipSpanwerService;
             random = new Random();
         }
         public void StartLevel(LevelDefinitionData levelData)
         {
-            enemySpanwerService.SpawnEnemiesByLevel(levelData);
+            shipSpanwerService.SpawnEnemiesByLevel(levelData);
             enemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_RIGHT);
             paceCheckAiShoot = levelData.EnemyShootPace;
+            shipSpanwerService.SpawnPlayer();
             hasStarted = true;
         }
 

@@ -10,12 +10,13 @@ public class MainSceneInstallers : MonoInstaller
     	Container.Bind<string>().FromInstance("Welcome to SpaceInvaders-Sybo! this msg tells Zenject is working well");
         Container.Bind<Greeter>().AsSingle().NonLazy();
         Container.Bind<IPositionService>().To<GameEntitiesPositionService>().AsSingle().NonLazy();
-        Container.Bind<IEnemySpawnerService>().To<SpaceInvadersEnemySpawnerService>().AsSingle().NonLazy();
+        Container.Bind<IShipSpawnerService>().To<SpaceInvadersShipSpawnerService>().AsSingle().NonLazy();
         Container.Bind(typeof(IEnemyMovementService), typeof(ITickable)).To<SpaceInvadersEnemyMovementService>().AsSingle().NonLazy();
-        Container.Bind(typeof(IEnemyDirector), typeof(ITickable)).To<SpaceInvadersDirectorService>().AsSingle().NonLazy();
+        Container.Bind(typeof(IGameDirector), typeof(ITickable)).To<SpaceInvadersDirectorService>().AsSingle().NonLazy();
+        Container.Bind<IScoreService>().To<ScoreManagerService>().AsSingle().NonLazy();
     }
 
-    public class Greeter
+    private class Greeter
     {
         public Greeter(string message)
         {

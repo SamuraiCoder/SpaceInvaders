@@ -5,7 +5,7 @@ using Zenject;
 
 public class GameManagerBehavior : MonoBehaviour
 {
-    [Inject] public IEnemyDirector EnemyDirector;
+    [Inject] public IGameDirector gameDirector;
     
     private void Start()
     {
@@ -23,6 +23,6 @@ public class GameManagerBehavior : MonoBehaviour
             EnemyShootPace = 2.5f
         };
         
-        EnemyDirector.StartLevel(levelData);
+        gameDirector.StartLevel(levelData);
     }
 }

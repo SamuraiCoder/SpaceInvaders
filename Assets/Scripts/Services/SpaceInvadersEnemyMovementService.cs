@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Data;
 using Events;
 using pEventBus;
@@ -216,7 +215,7 @@ namespace Services
             enemiesList[e.EnemyName] = new EnemyData
             {
                 EnemyColor = e.Color,
-                EnemyName = e.EnemyName,
+                EnemyName = e.EnemyName
             };
         }
 
