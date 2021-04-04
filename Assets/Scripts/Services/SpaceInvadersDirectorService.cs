@@ -1,4 +1,5 @@
-﻿using Events;
+﻿using Data;
+using Events;
 using pEventBus;
 using Services.Interfaces;
 using UnityEngine;
@@ -7,28 +8,37 @@ using Random = System.Random;
 
 namespace Services
 {
-    public class SpaceInvadersDirectorService : IGameDirector, ITickable, IEventReceiver<PlayerShipDestroyedEvent>
+    public class SpaceInvadersDirectorService : IGameDirector, ITickable, IEventReceiver<PlayerShipDestroyedEvent>,
+        IEventReceiver<EnemyDestroyedScoreEvent>
     {
         [Inject] private IEnemyMovementService enemyMovementService;
         [Inject] private IShipSpawnerService shipSpanwerService;
+        [Inject] private IScoreService scoreManagerService;
         
         private bool hasStarted;
         private float lastCheckAiShoot;
         private float paceCheckAiShoot;
         private Random random;
+        private int currentLifes;
+        private int currentLevel;
 
-        public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, IShipSpawnerService shipSpanwerService)
+        public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, IShipSpawnerService shipSpanwerService,
+            IScoreService scoreManagerService)
         {
             this.enemyMovementService = enemyMovementService;
             this.shipSpanwerService = shipSpanwerService;
+            this.scoreManagerService = scoreManagerService;
             random = new Random();
+            EventBus.Register(this);
         }
         public void StartLevel(LevelDefinitionData levelData)
         {
             shipSpanwerService.SpawnEnemiesByLevel(levelData);
             enemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_RIGHT);
             paceCheckAiShoot = levelData.EnemyShootPace;
-            shipSpanwerService.SpawnPlayer();
+            currentLifes = levelData.PlayerLifes;
+            currentLevel = levelData.LevelNumber;
+            OnSpawnPlayerShip();
             hasStarted = true;
         }
 
@@ -74,7 +84,28 @@ namespace Services
 
         public void OnEvent(PlayerShipDestroyedEvent e)
         {
-            throw new System.NotImplementedException();
+            if (currentLifes <= 0)
+            {
+                //GameOver
+                return;
+            }
+
+            --currentLifes;
+            OnSpawnPlayerShip();
+        }
+
+        private void OnSpawnPlayerShip()
+        {
+            shipSpanwerService.SpawnPlayer();
+            EventBus<PlayerLifesAmountEvent>.Raise(new PlayerLifesAmountEvent
+            {
+                Lifes = currentLifes
+            });
+        }
+
+        public void OnEvent(EnemyDestroyedScoreEvent e)
+        {
+            scoreManagerService.AddScore(currentLevel, e.ScorePerDeath);
         }
     }
 }

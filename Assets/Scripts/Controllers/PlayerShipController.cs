@@ -121,14 +121,13 @@ namespace Controllers
             Destroy(obj.gameObject);
             
             OnDestroyPlayerShip();
-            
-            EventBus<PlayerShipDestroyedEvent>.Raise(new PlayerShipDestroyedEvent());
         }
         
         private void OnDestroyPlayerShip()
         {
             LeanTween.rotateAround(gameObject, Vector3.forward, 360, 0.25f).setOnComplete(() =>
             {
+                EventBus<PlayerShipDestroyedEvent>.Raise(new PlayerShipDestroyedEvent());
                 Destroy(gameObject);
             });
         }

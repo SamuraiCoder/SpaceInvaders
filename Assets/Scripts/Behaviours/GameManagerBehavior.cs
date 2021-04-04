@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Data;
 using Services.Interfaces;
 using UnityEngine;
 using Zenject;
@@ -18,9 +19,11 @@ public class GameManagerBehavior : MonoBehaviour
         
         var levelData = new LevelDefinitionData
         {
+            LevelNumber = 1,
             EnemiesPerRow = 5,
             NumEnemies = 20,
-            EnemyShootPace = 2.5f
+            EnemyShootPace = 2.5f,
+            PlayerLifes = 3
         };
         
         gameDirector.StartLevel(levelData);

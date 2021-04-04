@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Data;
 using Events;
 using pEventBus;
@@ -271,12 +272,18 @@ namespace Services
                 return;
             }
 
-            var enemyColor = enemiesList[e.EnemyShipName].EnemyColor;
+            var enemyData = enemiesList[e.EnemyShipName];
+            var scoreShipDestroyed = GetScoreEnemyShip(enemyData);
+            //Add the score 
+            EventBus<EnemyDestroyedScoreEvent>.Raise(new EnemyDestroyedScoreEvent
+            {
+                ScorePerDeath = scoreShipDestroyed
+            });
             var enemiesListToDestroy = new List<string>();
-            OnCascadeEffect(e.EnemyShipName, enemyColor, ref enemiesListToDestroy);
+            OnCascadeEffect(e.EnemyShipName, enemyData.EnemyColor, ref enemiesListToDestroy);
             OnDestroyEnemiesEffect(enemiesListToDestroy);
         }
-
+        
         private void OnDestroyEnemiesEffect(List<string> enemiesListToDestroy)
         {
             foreach (var enemyName in enemiesListToDestroy)
@@ -285,7 +292,16 @@ namespace Services
                 {
                     continue;
                 }
+
+                var enemyData = enemiesList[enemyName];
+                var scoreShipDestroyed = GetScoreEnemyShip(enemyData);
+                //Add the score 
+                EventBus<EnemyDestroyedScoreEvent>.Raise(new EnemyDestroyedScoreEvent
+                {
+                    ScorePerDeath = scoreShipDestroyed
+                });
                 
+                //Destroy graphically the ship
                 EventBus<EnemyCascadeEffectEvent>.Raise(new EnemyCascadeEffectEvent
                 {
                     EnemyShipName = enemyName
@@ -339,6 +355,37 @@ namespace Services
             }
 
             return neighbours;
+        }
+        
+        private int GetScoreEnemyShip(EnemyData enemyData)
+        {
+            var score = 0;
+            
+            switch (enemyData.EnemyColor)
+            {
+                case ConstValues.ColorEnemyPool.BLACK:
+                {
+                    score = ConstValues.SCORE_BLACK;
+                    break;
+                }
+                case ConstValues.ColorEnemyPool.BLUE:
+                {
+                    score = ConstValues.SCORE_BLUE;
+                    break;
+                }
+                case ConstValues.ColorEnemyPool.GREEN:
+                {
+                    score = ConstValues.SCORE_GREEN;
+                    break;
+                }
+                case ConstValues.ColorEnemyPool.RED:
+                {
+                    score = ConstValues.SCORE_RED;
+                    break;
+                }
+            }
+
+            return score;
         }
     }
 }

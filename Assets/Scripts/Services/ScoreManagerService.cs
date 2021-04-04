@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Data;
+using Events;
+using pEventBus;
 using Services.Interfaces;
 
 namespace Services
@@ -27,6 +29,11 @@ namespace Services
             }
 
             currentLevelScore.Score += score;
+            
+            EventBus<PlayerScoreAmountEvent>.Raise(new PlayerScoreAmountEvent
+            {
+                Score = currentLevelScore.Score
+            });
         }
 
         public void LoadLevelScore(int level)

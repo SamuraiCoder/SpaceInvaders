@@ -37,4 +37,9 @@
     public const string LASER_LAYER = "LaserProjectile";
     public const string LASER_ENEMY_LAYER = "LaserEnemyProjectile";
     public const float PLAYER_FIRE_RATE = 1.0f;
+    public const int SCORE_BLACK = 20;
+    public const int SCORE_BLUE = 15;
+    public const int SCORE_GREEN = 10;
+    public const int SCORE_RED = 25;
+    public const int SCORE_MISTERY = 50;
 }
