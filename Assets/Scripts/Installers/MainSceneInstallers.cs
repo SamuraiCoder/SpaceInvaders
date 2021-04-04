@@ -9,6 +9,7 @@ public class MainSceneInstallers : MonoInstaller
     {
     	Container.Bind<string>().FromInstance("Welcome to SpaceInvaders-Sybo! this msg tells Zenject is working well");
         Container.Bind<Greeter>().AsSingle().NonLazy();
+        Container.Bind<IPauseService>().To<PauseService>().AsSingle().NonLazy();
         Container.Bind<IPositionService>().To<GameEntitiesPositionService>().AsSingle().NonLazy();
         Container.Bind<IShipSpawnerService>().To<SpaceInvadersShipSpawnerService>().AsSingle().NonLazy();
         Container.Bind(typeof(IEnemyMovementService), typeof(ITickable)).To<SpaceInvadersEnemyMovementService>().AsSingle().NonLazy();

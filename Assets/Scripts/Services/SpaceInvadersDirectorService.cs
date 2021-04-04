@@ -87,6 +87,7 @@ namespace Services
             if (currentLifes <= 0)
             {
                 //GameOver
+                scoreManagerService.SaveLevelScore(currentLevel);
                 return;
             }
 

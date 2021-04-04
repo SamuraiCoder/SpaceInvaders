@@ -8,12 +8,12 @@ namespace Services
 {
     public class ScoreManagerService : IScoreService
     {
-        private Dictionary<string, Dictionary<int, LevelScoreData>> scorePerLevel;
+        private Dictionary<int, LevelScoreData> scorePerLevel;
         private LevelScoreData currentLevelScore;
         
         public ScoreManagerService()
         {
-            scorePerLevel = new Dictionary<string, Dictionary<int, LevelScoreData>>();
+            scorePerLevel = new Dictionary<int, LevelScoreData>();
         }
         
         public void AddScore(int level, int score)
@@ -41,26 +41,17 @@ namespace Services
             throw new System.NotImplementedException();
         }
 
-        public void SaveLevelScore(string player, int level)
+        public void SaveLevelScore(int level)
         {
-            //Temp data from level
-            var newScoreData = new Dictionary<int, LevelScoreData> {[level] = currentLevelScore};
-
-            if (!scorePerLevel.ContainsKey(player))
+            if (!scorePerLevel.ContainsKey(level))
             {
-                scorePerLevel[player] = newScoreData;
+                scorePerLevel[level] = currentLevelScore;
                 return;
             }
             
-            var oldSavedData = scorePerLevel[player];
+            var oldSavedData = scorePerLevel[level];
 
-            if (!oldSavedData.ContainsKey(level))
-            {
-                scorePerLevel[player] = newScoreData;
-                return;
-            }
-
-            var oldScore = oldSavedData[level].Score;
+            var oldScore = oldSavedData.Score;
 
             if (oldScore >= currentLevelScore.Score)
             {
@@ -68,7 +59,7 @@ namespace Services
                 return;
             }
 
-            oldSavedData[level] = currentLevelScore;
+            scorePerLevel[level] = currentLevelScore;
             
             //Save to disk?
 
