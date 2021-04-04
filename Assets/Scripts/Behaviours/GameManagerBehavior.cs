@@ -24,7 +24,7 @@ public class GameManagerBehavior : MonoBehaviour
             NumEnemies = 20,
             EnemyShootPace = 2.5f,
             PlayerLifes = 2,
-            ShieldsAmount = 2,
+            ShieldsAmount = 1,
             ShieldHitsPerBlock = 2
         };
         
