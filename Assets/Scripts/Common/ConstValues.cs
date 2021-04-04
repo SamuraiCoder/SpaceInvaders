@@ -36,4 +36,5 @@
     public const string ENEMY_LAYER = "EnemyShip";
     public const string LASER_LAYER = "LaserProjectile";
     public const string LASER_ENEMY_LAYER = "LaserEnemyProjectile";
+    public const float PLAYER_FIRE_RATE = 1.0f;
 }

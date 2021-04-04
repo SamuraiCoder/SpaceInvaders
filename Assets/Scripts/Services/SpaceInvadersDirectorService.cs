@@ -7,7 +7,7 @@ using Random = System.Random;
 
 namespace Services
 {
-    public class SpaceInvadersDirectorService : IEnemyDirector, ITickable
+    public class SpaceInvadersDirectorService : IEnemyDirector, ITickable, IEventReceiver<PlayerShipDestroyedEvent>
     {
         [Inject] private IEnemyMovementService enemyMovementService;
         [Inject] private IEnemySpawnerService enemySpanwerService;
@@ -69,6 +69,11 @@ namespace Services
             {
                 EnemyShipName = chosenEnemyName
             });
+        }
+
+        public void OnEvent(PlayerShipDestroyedEvent e)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Behaviours;
+﻿using System.Collections;
+using Behaviours;
 using Events;
 using pEventBus;
 using UnityEngine;
@@ -12,6 +13,10 @@ namespace Controllers
         private Vector2 playerDirection;
         private ShootingEntityBehavior shootingBehavior;
         private int laserProjectileLayer;
+        private float playerFireRate;
+        private float currentFireRate;
+        private bool receivedTap;
+        private bool isCoolingDown;
 
         protected override void Start()
         {
@@ -20,6 +25,7 @@ namespace Controllers
             speed = playerSpeed;
             shootingBehavior = GetComponent<ShootingEntityBehavior>();
             laserProjectileLayer = LayerMask.NameToLayer(ConstValues.LASER_ENEMY_LAYER);
+            playerFireRate = ConstValues.PLAYER_FIRE_RATE;
         }
 
         private void OnDestroy()
@@ -32,6 +38,32 @@ namespace Controllers
             base.Update();
 
             OnPlayerInputReceived();
+            OnPlayerCanShoot();
+        }
+
+        private void OnPlayerCanShoot()
+        {
+            if (!receivedTap)
+            {
+                return;
+            }
+
+            receivedTap = false;
+
+            if (isCoolingDown)
+            {
+                return;
+            }
+            
+            shootingBehavior.ShootLaserProjectile(ConstValues.ShootingEntityType.PLAYER);
+            StartCoroutine(OnCoolingDown());
+        }
+
+        private IEnumerator OnCoolingDown()
+        {
+            isCoolingDown = true;
+            yield return new WaitForSeconds(playerFireRate);
+            isCoolingDown = false;
         }
 
         private void OnPlayerInputReceived()
@@ -75,7 +107,7 @@ namespace Controllers
 
         public void OnEvent(ShootLaserPlayerEvent e)
         {
-            shootingBehavior.ShootLaserProjectile(ConstValues.ShootingEntityType.PLAYER);
+            receivedTap = true;
         }
         
         private void OnTriggerEnter2D(Collider2D obj)
