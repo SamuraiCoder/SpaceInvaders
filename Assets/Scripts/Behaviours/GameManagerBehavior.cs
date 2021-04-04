@@ -23,7 +23,9 @@ public class GameManagerBehavior : MonoBehaviour
             EnemiesPerRow = 5,
             NumEnemies = 20,
             EnemyShootPace = 2.5f,
-            PlayerLifes = 1
+            PlayerLifes = 2,
+            ShieldsAmount = 2,
+            ShieldHitsPerBlock = 2
         };
         
         gameDirector.StartLevel(levelData);

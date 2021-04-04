@@ -2,9 +2,10 @@
 
 namespace Services.Interfaces
 {
-    public interface IShipSpawnerService
+    public interface ISpawnerService
     {
         void SpawnEnemiesByLevel(LevelDefinitionData levelData);
         void SpawnPlayer();
+        void SpawnShields(LevelDefinitionData levelData);
     }
 }

@@ -12,7 +12,7 @@ namespace Services
         IEventReceiver<EnemyDestroyedScoreEvent>
     {
         [Inject] private IEnemyMovementService enemyMovementService;
-        [Inject] private IShipSpawnerService shipSpanwerService;
+        [Inject] private ISpawnerService spawnerService;
         [Inject] private IScoreService scoreManagerService;
         
         private bool hasStarted;
@@ -22,22 +22,23 @@ namespace Services
         private int currentLifes;
         private int currentLevel;
 
-        public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, IShipSpawnerService shipSpanwerService,
+        public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, ISpawnerService spawnerService,
             IScoreService scoreManagerService)
         {
             this.enemyMovementService = enemyMovementService;
-            this.shipSpanwerService = shipSpanwerService;
+            this.spawnerService = spawnerService;
             this.scoreManagerService = scoreManagerService;
             random = new Random();
             EventBus.Register(this);
         }
         public void StartLevel(LevelDefinitionData levelData)
         {
-            shipSpanwerService.SpawnEnemiesByLevel(levelData);
+            spawnerService.SpawnEnemiesByLevel(levelData);
             enemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_RIGHT);
             paceCheckAiShoot = levelData.EnemyShootPace;
             currentLifes = levelData.PlayerLifes;
             currentLevel = levelData.LevelNumber;
+            spawnerService.SpawnShields(levelData);
             OnSpawnPlayerShip();
             hasStarted = true;
         }
@@ -87,6 +88,7 @@ namespace Services
             if (currentLifes <= 0)
             {
                 //GameOver
+                hasStarted = false;
                 scoreManagerService.SaveLevelScore(currentLevel);
                 return;
             }
@@ -97,7 +99,7 @@ namespace Services
 
         private void OnSpawnPlayerShip()
         {
-            shipSpanwerService.SpawnPlayer();
+            spawnerService.SpawnPlayer();
             EventBus<PlayerLifesAmountEvent>.Raise(new PlayerLifesAmountEvent
             {
                 Lifes = currentLifes

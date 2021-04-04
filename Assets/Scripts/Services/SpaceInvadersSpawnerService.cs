@@ -10,7 +10,7 @@ using Random = System.Random;
 
 namespace Services
 {
-    public class SpaceInvadersShipSpawnerService : IShipSpawnerService
+    public class SpaceInvadersSpawnerService : ISpawnerService
     {
         [Inject] public IPositionService gameEntitiesPositionService;
         
@@ -24,7 +24,7 @@ namespace Services
         private List<string> enemySpritesPoolRed;
         private Random random;
         
-        public SpaceInvadersShipSpawnerService(IPositionService gameEntitiesPositionService)
+        public SpaceInvadersSpawnerService(IPositionService gameEntitiesPositionService)
         {
             this.gameEntitiesPositionService = gameEntitiesPositionService;
 
@@ -91,6 +91,41 @@ namespace Services
             EventBus<SpawnPlayerEvent>.Raise(new SpawnPlayerEvent
             {
                 SpawnPosition = playerStartingPosition
+            });
+        }
+
+        public void SpawnShields(LevelDefinitionData levelData)
+        {
+            var hitsPerBlock = levelData.ShieldHitsPerBlock;
+            if (levelData.ShieldsAmount == 1)
+            {
+                var shieldSpawnPos = gameEntitiesPositionService.GetEntityPosition("ShieldPosition2");
+                OnSpawnShield(shieldSpawnPos, hitsPerBlock);
+            }
+            else if (levelData.ShieldsAmount == 2)
+            {
+                var shieldSpawnPos1 = gameEntitiesPositionService.GetEntityPosition("ShieldPosition1");
+                OnSpawnShield(shieldSpawnPos1, hitsPerBlock);
+                var shieldSpawnPos2 = gameEntitiesPositionService.GetEntityPosition("ShieldPosition3");
+                OnSpawnShield(shieldSpawnPos2, hitsPerBlock);
+            }
+            else if (levelData.ShieldsAmount == 3)
+            {
+                var shieldSpawnPos1 = gameEntitiesPositionService.GetEntityPosition("ShieldPosition1");
+                OnSpawnShield(shieldSpawnPos1, hitsPerBlock);
+                var shieldSpawnPos2 = gameEntitiesPositionService.GetEntityPosition("ShieldPosition2");
+                OnSpawnShield(shieldSpawnPos2, hitsPerBlock);
+                var shieldSpawnPos3 = gameEntitiesPositionService.GetEntityPosition("ShieldPosition3");
+                OnSpawnShield(shieldSpawnPos3, hitsPerBlock);
+            }
+        }
+
+        private void OnSpawnShield(Vector2 spawnPosition, int hitsPerBlock)
+        {
+            EventBus<SpawnShieldEvent>.Raise(new SpawnShieldEvent
+            {
+                SpawnPosition = spawnPosition,
+                ShieldHitsPerBlock = hitsPerBlock
             });
         }
 
