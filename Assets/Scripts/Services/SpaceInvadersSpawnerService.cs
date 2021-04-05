@@ -14,14 +14,15 @@ namespace Services
     {
         [Inject] public IPositionService gameEntitiesPositionService;
         
-        private int currentSpawnedEntities;
-        private int currentRow;
-        private int enemiesPerRow;
-        private Vector2 initialSpawnPosition;
-        private List<string> enemySpritesPoolBlack;
-        private List<string> enemySpritesPoolBlue;
-        private List<string> enemySpritesPoolGreen;
-        private List<string> enemySpritesPoolRed;
+        internal int currentSpawnedEntities;
+        internal int currentSpawnedShields;
+        internal int currentRow;
+        internal int enemiesPerRow;
+        internal Vector2 initialSpawnPosition;
+        internal List<string> enemySpritesPoolBlack;
+        internal List<string> enemySpritesPoolBlue;
+        internal List<string> enemySpritesPoolGreen;
+        internal List<string> enemySpritesPoolRed;
         private Random random;
         
         public SpaceInvadersSpawnerService(IPositionService gameEntitiesPositionService)
@@ -127,6 +128,8 @@ namespace Services
                 SpawnPosition = spawnPosition,
                 ShieldHitsPerBlock = hitsPerBlock
             });
+            
+            ++currentSpawnedShields;
         }
 
         private void OnSpawnEnemy(int position)
@@ -202,6 +205,7 @@ namespace Services
         
         public void Finishlevel()
         {
+            currentSpawnedEntities = 0;
             currentSpawnedEntities = 0;
             currentRow = 0;
             enemiesPerRow = 0;

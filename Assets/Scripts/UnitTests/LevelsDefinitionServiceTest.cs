@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Services;
+using UnityEngine;
 
 namespace UnitTests
 {
@@ -8,6 +9,7 @@ namespace UnitTests
         [Test]
         public void LevelDefinitionStart()
         {
+            PlayerPrefs.DeleteAll();
             var levelDefService = new LevelsDefinitionService();
             var level = levelDefService.GetNextLevelToPlay();
             Assert.AreEqual(level, 1);
@@ -15,6 +17,7 @@ namespace UnitTests
         [Test]
         public void LevelDefinitionGetLevelDefinition()
         {
+            PlayerPrefs.DeleteAll();
             var levelDefService = new LevelsDefinitionService();
             var level = levelDefService.GetNextLevelToPlay();
             var getLevelDef = levelDefService.GetLevelDefinition(level);
