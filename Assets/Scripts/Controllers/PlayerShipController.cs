@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace Controllers
 {
-    public class PlayerShipController : BaseShipEntity, IEventReceiver<PlayerShipMoveEvent>, IEventReceiver<ShootLaserPlayerEvent>
+    public class PlayerShipController : BaseShipEntity, IEventReceiver<PlayerShipMoveEvent>, IEventReceiver<ShootLaserPlayerEvent>,
+        IEventReceiver<DestroyPlayerShip>
     {
         [SerializeField] private float playerSpeed;
 
@@ -130,6 +131,11 @@ namespace Controllers
                 EventBus<PlayerShipDestroyedEvent>.Raise(new PlayerShipDestroyedEvent());
                 Destroy(gameObject);
             });
+        }
+
+        public void OnEvent(DestroyPlayerShip e)
+        {
+            Destroy(gameObject);
         }
     }
 }

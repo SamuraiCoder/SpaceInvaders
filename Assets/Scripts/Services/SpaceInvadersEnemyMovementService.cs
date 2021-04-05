@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Data;
 using Events;
 using pEventBus;
@@ -40,8 +39,9 @@ namespace Services
             currentEnemyDirection = startingDirectionSense;
         }
 
-        public void StopMovingEnemies()
+        public void FinishLevel()
         {
+            OnDeleteEnemiesShip();
             hasStarted = false;
         }
         
@@ -386,6 +386,20 @@ namespace Services
             }
 
             return score;
+        }
+
+        private void OnDeleteEnemiesShip()
+        {
+            foreach (var enemyShip in enemiesList)
+            {
+                //Destroy graphically the ship
+                EventBus<EnemyCascadeEffectEvent>.Raise(new EnemyCascadeEffectEvent
+                {
+                    EnemyShipName = enemyShip.Key
+                });
+            }
+            
+            enemiesList.Clear();
         }
     }
 }

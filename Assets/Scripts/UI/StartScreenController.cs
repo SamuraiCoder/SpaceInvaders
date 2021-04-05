@@ -1,4 +1,6 @@
 ﻿using Data;
+using Events;
+using pEventBus;
 using Services.Interfaces;
 using UnityEngine;
 using Zenject;
@@ -6,7 +8,7 @@ using Zenject;
 namespace UI
 {
     [RequireComponent(typeof(Animator))]
-    public class StartScreenController : MonoBehaviour
+    public class StartScreenController : MonoBehaviour, IEventReceiver<ExitLevelEvent>
     {
         private static readonly int FadeInUi = Animator.StringToHash("FadeIn");
         private static readonly int FadeOutUi = Animator.StringToHash("FadeOut");
@@ -17,6 +19,12 @@ namespace UI
         private void Start()
         {
             uiAnimator = GetComponent<Animator>();
+            EventBus.Register(this);
+        }
+
+        private void OnDestroy()
+        {
+            EventBus.UnRegister(this);
         }
 
         public void OnPlayButtonClicked()
@@ -45,6 +53,12 @@ namespace UI
         public void OnFadeInAnimationEventFinished()
         {
             //In case needed
+        }
+
+        public void OnEvent(ExitLevelEvent e)
+        {
+            uiAnimator.SetTrigger(FadeOutUi);
+            gameDirector.FinishLevel();
         }
     }
 }

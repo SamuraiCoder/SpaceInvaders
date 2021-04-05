@@ -1,4 +1,6 @@
-﻿using Events;
+﻿using System.Collections.Generic;
+using System.Security.Cryptography;
+using Events;
 using pEventBus;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,18 +9,20 @@ using Random = System.Random;
 namespace Behaviours
 {
     public class SpawnerBehavior : MonoBehaviour, IEventReceiver<SpawnEnemyEvent>, IEventReceiver<SpawnPlayerEvent>,
-        IEventReceiver<SpawnShieldEvent>
+        IEventReceiver<SpawnShieldEvent>, IEventReceiver<ExitLevelEvent>
     {
         [SerializeField] private GameObject enemyPrefab;
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject[] shieldPrefabs;
 
         private Random random;
+        private List<GameObject> shields;
 
         private void Start()
         {
             EventBus.Register(this);
             random = new Random();
+            shields = new List<GameObject>();
         }
 
         private void OnDestroy()
@@ -45,7 +49,7 @@ namespace Behaviours
 
         private void OnSpawnPlayer(SpawnPlayerEvent spawnPlayerEvent)
         {
-            var go = Instantiate(playerPrefab, spawnPlayerEvent.SpawnPosition, transform.rotation, gameObject.transform.parent);
+            var go = Instantiate(playerPrefab, spawnPlayerEvent.SpawnPosition, transform.rotation, gameObject.transform);
             go.name = ConstValues.PLAYER_NAME;
         }
 
@@ -53,7 +57,8 @@ namespace Behaviours
         {
             var rndIdx = random.Next(0, shieldPrefabs.Length);
             var shieldRef = shieldPrefabs[rndIdx];
-            var go = Instantiate(shieldRef, e.SpawnPosition, transform.rotation, gameObject.transform.parent);
+            var go = Instantiate(shieldRef, e.SpawnPosition, transform.rotation, gameObject.transform);
+            shields.Add(go);
             OnApplyNumHits(go, e.ShieldHitsPerBlock);
         }
 
@@ -63,6 +68,14 @@ namespace Behaviours
             foreach (var shield in children)
             {
                 shield.NumHits = shieldHitsPerBlock;
+            }
+        }
+
+        public void OnEvent(ExitLevelEvent e)
+        {
+            foreach (var shield in shields)
+            {
+                Destroy(shield);
             }
         }
     }

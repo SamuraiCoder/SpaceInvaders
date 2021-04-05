@@ -119,7 +119,7 @@ namespace Services
                 OnSpawnShield(shieldSpawnPos3, hitsPerBlock);
             }
         }
-
+        
         private void OnSpawnShield(Vector2 spawnPosition, int hitsPerBlock)
         {
             EventBus<SpawnShieldEvent>.Raise(new SpawnShieldEvent
@@ -198,6 +198,14 @@ namespace Services
             }
 
             return string.Empty;
+        }
+        
+        public void Finishlevel()
+        {
+            currentSpawnedEntities = 0;
+            currentRow = 0;
+            enemiesPerRow = 0;
+            initialSpawnPosition = Vector2.zero;
         }
     }
 }

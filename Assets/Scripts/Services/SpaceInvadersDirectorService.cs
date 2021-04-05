@@ -33,21 +33,23 @@ namespace Services
         }
         public void StartLevel(LevelDefinitionData levelData)
         {
-            spawnerService.SpawnEnemiesByLevel(levelData);
-            enemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_RIGHT);
-            paceCheckAiShoot = levelData.EnemyShootPace;
-            currentLifes = levelData.PlayerLifes;
-            currentLevel = levelData.LevelNumber;
-            spawnerService.SpawnShields(levelData);
+            OnStartEnemiesActions(levelData);
+
+            OnLevelActions(levelData);
+            
             OnSpawnPlayerShip();
+            
             hasStarted = true;
         }
-
+        
         public void FinishLevel()
         {
+            enemyMovementService.FinishLevel();
+            spawnerService.Finishlevel();
+            DestroyPlayerShip();
             hasStarted = false;
         }
-
+        
         public void Tick()
         {
             if (!hasStarted)
@@ -88,7 +90,8 @@ namespace Services
             if (currentLifes <= 0)
             {
                 //GameOver
-                hasStarted = false;
+                FinishLevel();
+                
                 scoreManagerService.SaveLevelScore(currentLevel);
                 return;
             }
@@ -109,6 +112,32 @@ namespace Services
         public void OnEvent(EnemyDestroyedScoreEvent e)
         {
             scoreManagerService.AddScore(currentLevel, e.ScorePerDeath);
+        }
+        
+        private void DestroyPlayerShip()
+        {
+            EventBus<DestroyPlayerShip>.Raise(new DestroyPlayerShip());
+        }
+
+        private void OnStartEnemiesActions(LevelDefinitionData levelData)
+        {
+            spawnerService.SpawnEnemiesByLevel(levelData);
+            enemyMovementService.StartMovingEnemies(ConstValues.EnemyDirectionSense.GOING_RIGHT);
+            paceCheckAiShoot = levelData.EnemyShootPace;
+        }
+        
+        private void OnLevelActions(LevelDefinitionData levelData)
+        {
+            currentLifes = levelData.PlayerLifes;
+            currentLevel = levelData.LevelNumber;
+            
+            //Reset score
+            EventBus<PlayerScoreAmountEvent>.Raise(new PlayerScoreAmountEvent
+            {
+                Score = 000
+            });
+            
+            spawnerService.SpawnShields(levelData);
         }
     }
 }

@@ -7,5 +7,6 @@ namespace Services.Interfaces
         void SpawnEnemiesByLevel(LevelDefinitionData levelData);
         void SpawnPlayer();
         void SpawnShields(LevelDefinitionData levelData);
+        void Finishlevel();
     }
 }
