@@ -80,7 +80,6 @@ namespace Services
 
         private void SaveToDisk()
         {
-            //Save to disk?
             var serializedScore = Json.Serialize(scorePerLevel);
             PlayerPrefs.SetString(ConstValues.SCORE_PREFS_KEY, serializedScore);
             PlayerPrefs.Save();
