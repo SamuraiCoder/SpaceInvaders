@@ -1,5 +1,6 @@
-﻿using Data;
-
+﻿using System.Runtime.CompilerServices;
+using Data;
+[assembly: InternalsVisibleTo("UnitTests")]
 namespace Services.Interfaces
 {
     public interface ILevelsService

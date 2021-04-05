@@ -1,4 +1,7 @@
-﻿namespace Services.Interfaces
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("UnitTests")]
+namespace Services.Interfaces
 {
     public interface IScoreService
     {

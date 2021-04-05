@@ -10,8 +10,8 @@ namespace Services
 {
     public class ScoreManagerService : IScoreService
     {
-        private Dictionary<int, int> scorePerLevel;
-        private int currentLevelScore;
+        internal Dictionary<int, int> scorePerLevel;
+        internal int currentLevelScore;
         
         public ScoreManagerService()
         {

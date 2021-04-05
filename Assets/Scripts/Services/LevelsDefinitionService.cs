@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Data;
 using Services.Interfaces;
 using UnityEngine;
+[assembly: InternalsVisibleTo("UnitTests")]
 
 namespace Services
 {
