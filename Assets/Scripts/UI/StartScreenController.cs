@@ -33,11 +33,12 @@ namespace UI
             {
                 LevelNumber = 1,
                 EnemiesPerRow = 5,
-                NumEnemies = 20,
+                NumEnemies = 2,
                 EnemyShootPace = 2.5f,
-                PlayerLifes = 2,
+                PlayerLifes = 1,
                 ShieldsAmount = 1,
-                ShieldHitsPerBlock = 2
+                ShieldHitsPerBlock = 2,
+                BonusTimer = 40
             };
         
             gameDirector.StartLevel(levelData);
@@ -58,7 +59,7 @@ namespace UI
         public void OnEvent(ExitLevelEvent e)
         {
             uiAnimator.SetTrigger(FadeOutUi);
-            gameDirector.FinishLevel();
+            gameDirector.FinishLevel(false);
         }
     }
 }

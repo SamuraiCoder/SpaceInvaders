@@ -41,8 +41,9 @@ namespace Services
 
         public void FinishLevel()
         {
-            OnDeleteEnemiesShip();
             hasStarted = false;
+            OnDeleteEnemiesShip();
+            enemiesList.Clear();
         }
         
         public void Tick()
@@ -51,11 +52,27 @@ namespace Services
             {
                 return;
             }
-            
+
+            AICheckWinCondition();
             AIMoveEnemies();
             AiEnemyShipDetector();
         }
-        
+
+        private void AICheckWinCondition()
+        {
+            if (enemiesList.Count != 0)
+            {
+                return;
+            }
+            
+            EventBus<EndLevelConditionEvent>.Raise(new EndLevelConditionEvent
+            {
+                WinLevel = true
+            });
+            
+            hasStarted = false;
+        }
+
         private void AIMoveEnemies()
         {
             lastCheckAIMove += Time.smoothDeltaTime;
@@ -281,6 +298,11 @@ namespace Services
             });
             var enemiesListToDestroy = new List<string>();
             OnCascadeEffect(e.EnemyShipName, enemyData.EnemyColor, ref enemiesListToDestroy);
+            //NOTE: if list is empty means it was not a multiple shot. Include single death
+            if (enemiesListToDestroy.Count == 0)
+            {
+                enemiesListToDestroy.Add(enemyData.EnemyName);
+            }
             OnDestroyEnemiesEffect(enemiesListToDestroy);
         }
         
@@ -317,6 +339,10 @@ namespace Services
             var neighbours = GetNeighbours(enemyData);
             foreach (var neighbour in neighbours)
             {
+                if (!enemiesList.ContainsKey(neighbour))
+                {
+                    continue;
+                }
                 var neighbourData = enemiesList[neighbour];
                 if (neighbourData.EnemyColor == enemyColor)
                 {
@@ -398,8 +424,6 @@ namespace Services
                     EnemyShipName = enemyShip.Key
                 });
             }
-            
-            enemiesList.Clear();
         }
     }
 }

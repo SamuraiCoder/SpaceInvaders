@@ -42,4 +42,6 @@
     public const int SCORE_GREEN = 10;
     public const int SCORE_RED = 25;
     public const int SCORE_MISTERY = 50;
+    public const string WIN_TEXT = "You win!";
+    public const string LOSE_TEXT = "You lose...";
 }

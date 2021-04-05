@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class PauseMenuController : MonoBehaviour, IEventReceiver<ShowPauseMenuEvent>
+    public class EndLevelController : MonoBehaviour, IEventReceiver<ShowEndLevelPanelEvent>
     {
-        [SerializeField] private GameObject pausePanel;
+        [SerializeField] private GameObject endLevelPanel;
         [SerializeField] private Image backgroundImage;
-        
+        [SerializeField] private Text endLevelConditionText;
+        [SerializeField] private Text scoreText;
+
         private void Start()
         {
             EventBus.Register(this);
@@ -20,11 +22,24 @@ namespace UI
             EventBus.UnRegister(this);
         }
 
-        public void OnEvent(ShowPauseMenuEvent e)
+        public void OnEvent(ShowEndLevelPanelEvent e)
         {
             OnShowPanel();
+            
+            if (e.DidWinLevel)
+            {
+                endLevelConditionText.color = Color.green;
+                endLevelConditionText.text = ConstValues.WIN_TEXT;
+                scoreText.text = e.TotalScore.ToString();
+            }
+            else
+            {
+                endLevelConditionText.color = Color.red;
+                endLevelConditionText.text = ConstValues.LOSE_TEXT;
+                scoreText.text = "0";
+            }
         }
-
+    
         public void OnContinueButton()
         {
             EventBus<PauseEvent>.Raise(new PauseEvent
@@ -32,37 +47,23 @@ namespace UI
                 Pause = false
             });
             
-            OnHidePausePanel();
-        }
-
-        public void OnMainMenuButton()
-        {
-            EventBus<PauseEvent>.Raise(new PauseEvent
-            {
-                Pause = false
-            }); 
-            
             EventBus<ExitLevelEvent>.Raise(new ExitLevelEvent());
             
-            OnHidePausePanel();
+            OnHideEndLevelPanel();
         }
-
+        
         private void OnShowPanel()
         {
-            pausePanel.SetActive(true);
+            endLevelPanel.SetActive(true);
 
             LeanTween.alpha(backgroundImage.rectTransform, 0.8f, 0.5f).setEase(LeanTweenType.linear).setOnComplete(() =>
             {
-                EventBus<PauseEvent>.Raise(new PauseEvent
-                {
-                    Pause = true
-                }); 
             });
         }
-
-        private void OnHidePausePanel()
+    
+        private void OnHideEndLevelPanel()
         {
-            pausePanel.SetActive(false);
+            endLevelPanel.SetActive(false);
             LeanTween.alpha(backgroundImage.rectTransform, 0f, 0.5f).setEase(LeanTweenType.linear);
         }
     }

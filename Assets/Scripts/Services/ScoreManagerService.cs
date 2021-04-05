@@ -36,6 +36,11 @@ namespace Services
             });
         }
 
+        public int GetCurrentScore(int level)
+        {
+            return currentLevelScore != null ? currentLevelScore.Score : 0;
+        }
+
         public void LoadLevelScore(int level)
         {
             throw new System.NotImplementedException();

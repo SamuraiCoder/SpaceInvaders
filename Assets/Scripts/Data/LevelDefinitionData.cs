@@ -9,5 +9,6 @@
         public int PlayerLifes { get; set; }
         public int ShieldsAmount { get; set; }
         public int ShieldHitsPerBlock { get; set; }
+        public float BonusTimer { get; set; }
     }
 }

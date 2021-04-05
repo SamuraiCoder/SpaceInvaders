@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using System;
+using Data;
 using Events;
 using pEventBus;
 using Services.Interfaces;
@@ -9,7 +10,7 @@ using Random = System.Random;
 namespace Services
 {
     public class SpaceInvadersDirectorService : IGameDirector, ITickable, IEventReceiver<PlayerShipDestroyedEvent>,
-        IEventReceiver<EnemyDestroyedScoreEvent>
+        IEventReceiver<EnemyDestroyedScoreEvent>, IEventReceiver<EndLevelConditionEvent>
     {
         [Inject] private IEnemyMovementService enemyMovementService;
         [Inject] private ISpawnerService spawnerService;
@@ -21,6 +22,9 @@ namespace Services
         private Random random;
         private int currentLifes;
         private int currentLevel;
+        private float currentBonusTimer;
+        private float totalBonusTimer;
+        private bool outOfTimeBonus;
 
         public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, ISpawnerService spawnerService,
             IScoreService scoreManagerService)
@@ -42,7 +46,7 @@ namespace Services
             hasStarted = true;
         }
         
-        public void FinishLevel()
+        public void FinishLevel(bool isCompleted)
         {
             enemyMovementService.FinishLevel();
             spawnerService.Finishlevel();
@@ -58,8 +62,9 @@ namespace Services
             }
 
             AiShoot();
+            OnCheckBonusTimer();
         }
-
+        
         private void AiShoot()
         {
             lastCheckAiShoot += Time.smoothDeltaTime;
@@ -90,9 +95,8 @@ namespace Services
             if (currentLifes <= 0)
             {
                 //GameOver
-                FinishLevel();
-                
-                scoreManagerService.SaveLevelScore(currentLevel);
+                OnEndLevelActions(false);
+                FinishLevel(false);
                 return;
             }
 
@@ -128,8 +132,11 @@ namespace Services
         
         private void OnLevelActions(LevelDefinitionData levelData)
         {
+            currentBonusTimer = 0.0f;
+            outOfTimeBonus = false;
             currentLifes = levelData.PlayerLifes;
             currentLevel = levelData.LevelNumber;
+            totalBonusTimer = levelData.BonusTimer;
             
             //Reset score
             EventBus<PlayerScoreAmountEvent>.Raise(new PlayerScoreAmountEvent
@@ -138,6 +145,58 @@ namespace Services
             });
             
             spawnerService.SpawnShields(levelData);
+        }
+        
+        private void OnCheckBonusTimer()
+        {
+            if (outOfTimeBonus)
+            {
+                return;
+            }
+            
+            currentBonusTimer += Time.smoothDeltaTime;
+
+            if (currentBonusTimer < totalBonusTimer)
+            {
+                return;
+            }
+
+            outOfTimeBonus = true;
+        }
+
+        public void OnEvent(EndLevelConditionEvent e)
+        {
+            OnEndLevelActions(e.WinLevel);
+            FinishLevel(e.WinLevel);
+        }
+
+        private void OnEndLevelActions(bool wonLevel)
+        {
+            var totalScore = scoreManagerService.GetCurrentScore(currentLevel);
+            if (!outOfTimeBonus)
+            {
+                var extraBonus = 1 + currentBonusTimer / totalBonusTimer;
+                var scoreWithBonus = (int)(totalScore * extraBonus);
+                scoreManagerService.AddScore(currentLevel, scoreWithBonus);
+            }
+
+            var endScore = scoreManagerService.GetCurrentScore(currentLevel);
+            
+            if (wonLevel)
+            {
+                totalScore = endScore;
+                scoreManagerService.SaveLevelScore(currentLevel);
+            }
+            else
+            {
+                totalScore = 0;
+            }
+            
+            EventBus<ShowEndLevelPanelEvent>.Raise(new ShowEndLevelPanelEvent
+            {
+                DidWinLevel = wonLevel,
+                TotalScore = totalScore
+            }); 
         }
     }
 }
