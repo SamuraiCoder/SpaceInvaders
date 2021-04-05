@@ -34,7 +34,7 @@ namespace Behaviours
 
         private void OnNumHits()
         {
-            if (currentHits == 0)
+            if (currentHits - 1 == 0)
             {
                 Destroy(gameObject);
             }
