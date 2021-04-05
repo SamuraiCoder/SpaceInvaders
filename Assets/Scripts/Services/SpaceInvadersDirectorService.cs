@@ -144,6 +144,8 @@ namespace Services
                 Score = 000
             });
             
+            scoreManagerService.StartLevel(currentLevel);
+            
             spawnerService.SpawnShields(levelData);
         }
         

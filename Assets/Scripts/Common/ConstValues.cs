@@ -44,4 +44,5 @@
     public const int SCORE_MISTERY = 50;
     public const string WIN_TEXT = "You win!";
     public const string LOSE_TEXT = "You lose...";
+    public const string SCORE_PREFS_KEY = "USER_SCORE";
 }
