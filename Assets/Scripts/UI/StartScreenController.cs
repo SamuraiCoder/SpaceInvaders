@@ -14,6 +14,7 @@ namespace UI
         private static readonly int FadeOutUi = Animator.StringToHash("FadeOut");
         
         [Inject] public IGameDirector gameDirector;
+        [Inject] public ILevelsService levelsService;
         private Animator uiAnimator;
 
         private void Start()
@@ -29,19 +30,9 @@ namespace UI
 
         public void OnPlayButtonClicked()
         {
-            var levelData = new LevelDefinitionData
-            {
-                LevelNumber = 1,
-                EnemiesPerRow = 5,
-                NumEnemies = 2,
-                EnemyShootPace = 2.5f,
-                PlayerLifes = 1,
-                ShieldsAmount = 1,
-                ShieldHitsPerBlock = 2,
-                BonusTimer = 40
-            };
-        
-            gameDirector.StartLevel(levelData);
+            var levelToPlay = levelsService.GetNextLevelToPlay();
+            var levelDef = levelsService.GetLevelDefinition(levelToPlay);
+            gameDirector.StartLevel(levelDef);
             
             uiAnimator.SetTrigger(FadeInUi);
         }

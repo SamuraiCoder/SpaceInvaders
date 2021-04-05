@@ -1,5 +1,4 @@
-﻿using System;
-using Data;
+﻿using Data;
 using Events;
 using pEventBus;
 using Services.Interfaces;
@@ -15,6 +14,7 @@ namespace Services
         [Inject] private IEnemyMovementService enemyMovementService;
         [Inject] private ISpawnerService spawnerService;
         [Inject] private IScoreService scoreManagerService;
+        [Inject] private ILevelsService levelsService;
         
         private bool hasStarted;
         private float lastCheckAiShoot;
@@ -27,11 +27,13 @@ namespace Services
         private bool outOfTimeBonus;
 
         public SpaceInvadersDirectorService(IEnemyMovementService enemyMovementService, ISpawnerService spawnerService,
-            IScoreService scoreManagerService)
+            IScoreService scoreManagerService, ILevelsService levelsService)
         {
             this.enemyMovementService = enemyMovementService;
             this.spawnerService = spawnerService;
             this.scoreManagerService = scoreManagerService;
+            this.levelsService = levelsService;
+            
             random = new Random();
             EventBus.Register(this);
         }
@@ -50,6 +52,7 @@ namespace Services
         {
             enemyMovementService.FinishLevel();
             spawnerService.Finishlevel();
+            levelsService.FinishLevel(isCompleted);
             DestroyPlayerShip();
             hasStarted = false;
         }
@@ -83,6 +86,10 @@ namespace Services
         {
             var enemiesPool = enemyMovementService.GetEnemiesAbleToShoot();
             var rndIdx = random.Next(0, enemiesPool.Count);
+            if (enemiesPool.Count < rndIdx)
+            {
+                return;
+            }
             var chosenEnemyName = enemiesPool[rndIdx];
             EventBus<ShootLaserEnemyEvent>.Raise(new ShootLaserEnemyEvent
             {

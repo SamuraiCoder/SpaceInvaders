@@ -45,4 +45,6 @@
     public const string WIN_TEXT = "You win!";
     public const string LOSE_TEXT = "You lose...";
     public const string SCORE_PREFS_KEY = "USER_SCORE";
+    public const string LEVEL_PLAYED_PREFS_KEY = "LEVEL_PLAYED";
+    public const int MAX_AMOUNT_LEVELS = 5;
 }
