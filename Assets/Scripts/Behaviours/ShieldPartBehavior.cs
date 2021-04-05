@@ -34,14 +34,19 @@ namespace Behaviours
 
         private void OnNumHits()
         {
+            
+            
             if (currentHits - 1 == 0)
             {
-                Destroy(gameObject);
+                LeanTween.scale(gameObject, Vector2.one * 1.50f, 0.5f).setEasePunch().setOnComplete(() =>
+                {
+                    Destroy(gameObject);
+                });
             }
             else
             {
                 --currentHits;
-                LeanTween.scale(gameObject, Vector2.one * 1.50f, 0.5f).setEasePunch(); 
+                LeanTween.scale(gameObject, Vector2.one * 1.50f, 0.5f).setEasePunch();
             }
         }
     }

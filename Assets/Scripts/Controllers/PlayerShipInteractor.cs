@@ -106,7 +106,7 @@ namespace Controllers
         
         private void OnFingerTap(LeanFinger obj)
         {
-            if (!obj.Tap)
+            if (!obj.Tap || obj.StartedOverGui)
             {
                 return;
             }
