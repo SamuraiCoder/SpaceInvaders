@@ -955,7 +955,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -41.700012}
+  m_AnchoredPosition: {x: 0, y: -41.69995}
   m_SizeDelta: {x: 0, y: 83.365845}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1284797284
@@ -1796,11 +1796,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StartScreen
-      objectReference: {fileID: 0}
-    - target: {fileID: 6918489698034233934, guid: d63760a4243974d05bf18ff42b5eb9af,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6918489698034233935, guid: d63760a4243974d05bf18ff42b5eb9af,
         type: 3}

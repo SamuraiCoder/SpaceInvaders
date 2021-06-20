@@ -7,7 +7,7 @@ public class MainSceneInstallers : MonoInstaller
 {
     public override void InstallBindings()
     {
-    	Container.Bind<string>().FromInstance("Welcome to SpaceInvaders-Sybo! this msg tells Zenject is working well");
+    	Container.Bind<string>().FromInstance("Welcome to SpaceInvaders! this msg tells Zenject is working well");
         Container.Bind<Greeter>().AsSingle().NonLazy();
         Container.Bind<IBackendService>().To<SpaceInvadersBackendService>().AsSingle().NonLazy();
         Container.Bind<IPauseService>().To<PauseService>().AsSingle().NonLazy();

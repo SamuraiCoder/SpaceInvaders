@@ -488,13 +488,13 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 55
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Space Invaders-Sybo
+  m_Text: Space Invaders
 --- !u!1 &6918489699123100528
 GameObject:
   m_ObjectHideFlags: 0
